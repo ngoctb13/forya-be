@@ -1,9 +1,10 @@
 package repos
 
 import (
+	"gorm.io/gorm"
+
 	"github.com/ngoctb13/forya-be/config"
 	"github.com/ngoctb13/forya-be/internal/domains/user/repos"
-	"gorm.io/gorm"
 )
 
 type Repo struct {
