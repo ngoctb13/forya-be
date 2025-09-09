@@ -3,6 +3,7 @@ package server
 import (
 	"github.com/gin-contrib/cors"
 	"github.com/ngoctb13/forya-be/handler"
+	"github.com/ngoctb13/forya-be/handler/middlewares"
 	"github.com/ngoctb13/forya-be/internal/domains/user/usecases"
 )
 
@@ -28,6 +29,10 @@ func (s *Server) InitCORS() {
 func (s *Server) InitRouter(domains *Domains) {
 	hdl := handler.NewHandler(domains.User)
 
-	router := s.router.Group("/v1")
-	hdl.ConfigRouteAPI(router)
+	authRouter := s.router.Group("api/auth")
+	hdl.ConfigRouteAuth(authRouter)
+
+	apiRouter := s.router.Group("api/v1")
+	apiRouter.Use(middlewares.AuthMiddleware())
+	hdl.ConfigRouteAPI(apiRouter)
 }

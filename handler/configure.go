@@ -16,6 +16,9 @@ func NewHandler(user *usecases.User) *Handler {
 }
 
 func (h *Handler) ConfigRouteAPI(router *gin.RouterGroup) {
-	// hello
 	router.GET("/hello", h.hello())
+}
+
+func (h *Handler) ConfigRouteAuth(router *gin.RouterGroup) {
+	router.GET("/login", h.login())
 }
