@@ -10,7 +10,7 @@ func AdminOnly() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		role := c.GetString("role")
 		if role != "admin" {
-			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "forbidden"})
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "only admin could access"})
 			return
 		}
 		c.Next()
