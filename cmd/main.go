@@ -11,7 +11,8 @@ import (
 	"github.com/ngoctb13/forya-be/config"
 	"github.com/ngoctb13/forya-be/infra"
 	"github.com/ngoctb13/forya-be/infra/repos"
-	"github.com/ngoctb13/forya-be/internal/domains/user/usecases"
+	classUC "github.com/ngoctb13/forya-be/internal/domains/class/usecases"
+	userUC "github.com/ngoctb13/forya-be/internal/domains/user/usecases"
 	"github.com/ngoctb13/forya-be/server"
 	"github.com/ngoctb13/forya-be/setting"
 	"go.uber.org/zap"
@@ -36,11 +37,14 @@ func main() {
 	db, err := infra.InitPostgres(cfg.DB)
 	rp := repos.NewSQLRepo(db, cfg.DB)
 	userRepo := rp.Users()
-	userUsecases := usecases.NewUser(userRepo)
+	classRepo := rp.Classes()
+	userUsecases := userUC.NewUser(userRepo)
+	classUsescases := classUC.NewClass(classRepo)
 
 	s := server.NewServer(cfg)
 	domains := &server.Domains{
-		User: userUsecases,
+		User:  userUsecases,
+		Class: classUsescases,
 	}
 	s.InitCORS()
 	s.InitRouter(domains)

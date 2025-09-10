@@ -4,11 +4,13 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/ngoctb13/forya-be/handler"
 	"github.com/ngoctb13/forya-be/handler/middlewares"
-	"github.com/ngoctb13/forya-be/internal/domains/user/usecases"
+	classUC "github.com/ngoctb13/forya-be/internal/domains/class/usecases"
+	userUC "github.com/ngoctb13/forya-be/internal/domains/user/usecases"
 )
 
 type Domains struct {
-	User *usecases.User
+	User  *userUC.User
+	Class *classUC.Class
 }
 
 func (s *Server) InitCORS() {
@@ -27,7 +29,7 @@ func (s *Server) InitCORS() {
 }
 
 func (s *Server) InitRouter(domains *Domains) {
-	hdl := handler.NewHandler(domains.User)
+	hdl := handler.NewHandler(domains.User, domains.Class)
 
 	authRouter := s.router.Group("api/auth")
 	hdl.ConfigRouteAuth(authRouter)

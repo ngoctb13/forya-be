@@ -10,6 +10,7 @@ import (
 const (
 	BKN   = "buikimngoc"
 	ADMIN = "admin"
+	USER  = "user"
 )
 
 type User struct {
@@ -35,6 +36,8 @@ func (u *User) CreateUser(ctx context.Context, input *models.CreateUserInput) er
 
 	if input.UserName == BKN {
 		input.Role = ADMIN
+	} else {
+		input.Role = USER
 	}
 
 	user := &models.User{

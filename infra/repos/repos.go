@@ -4,7 +4,8 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/ngoctb13/forya-be/config"
-	"github.com/ngoctb13/forya-be/internal/domains/user/repos"
+	classRp "github.com/ngoctb13/forya-be/internal/domains/class/repos"
+	userRp "github.com/ngoctb13/forya-be/internal/domains/user/repos"
 )
 
 type Repo struct {
@@ -19,6 +20,10 @@ func NewSQLRepo(db *gorm.DB, cfg *config.PostgresConfig) IRepo {
 	}
 }
 
-func (r *Repo) Users() repos.IUserRepo {
+func (r *Repo) Users() userRp.IUserRepo {
 	return NewUserSQLRepo(r.db)
+}
+
+func (r *Repo) Classes() classRp.IClassRepo {
+	return NewClassSQLRepo(r.db)
 }

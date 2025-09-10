@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS classes;
+DROP EXTENSION IF EXISTS "uuid-ossp";
