@@ -22,6 +22,7 @@ func NewHandler(user *userUC.User, class *classUC.Class) *Handler {
 func (h *Handler) ConfigRouteAPI(router *gin.RouterGroup) {
 	router.GET("/hello", h.Hello())
 	router.POST("/create/class", middlewares.AdminOnly(), h.CreateClass())
+	router.GET("/search/class", h.SearchClassByName())
 }
 
 func (h *Handler) ConfigRouteAuth(router *gin.RouterGroup) {

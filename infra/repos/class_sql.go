@@ -27,11 +27,11 @@ func (c *classSQLRepo) GetClassByID(ctx context.Context, id string) (*models.Cla
 	return &class, err
 }
 
-func (c *classSQLRepo) GetClassContainName(ctx context.Context, name string) (*models.Class, error) {
-	var class models.Class
+func (c *classSQLRepo) GetClassContainName(ctx context.Context, name string) ([]*models.Class, error) {
+	var classes []*models.Class
 	err := c.db.WithContext(ctx).
-		Where("name ILIKE ?", "%"+name+"%").
-		First(&class).Error
+		Where("unaccent(lower(name)) ILIKE unaccent(lower(?))", "%"+name+"%").
+		Find(&classes).Error
 
-	return &class, err
+	return classes, err
 }
