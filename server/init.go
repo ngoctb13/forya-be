@@ -4,13 +4,16 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/ngoctb13/forya-be/handler"
 	"github.com/ngoctb13/forya-be/handler/middlewares"
+	"github.com/ngoctb13/forya-be/infra/repos"
 	classUC "github.com/ngoctb13/forya-be/internal/domains/class/usecases"
+	studentUC "github.com/ngoctb13/forya-be/internal/domains/student/usecases"
 	userUC "github.com/ngoctb13/forya-be/internal/domains/user/usecases"
 )
 
 type Domains struct {
-	User  *userUC.User
-	Class *classUC.Class
+	User    *userUC.User
+	Class   *classUC.Class
+	Student *studentUC.Student
 }
 
 func (s *Server) InitCORS() {
@@ -26,6 +29,17 @@ func (s *Server) InitCORS() {
 		"X-Google-Access-Token",
 	}
 	s.router.Use(cors.New(corsConfig))
+}
+
+func (s *Server) InitDomains(repo repos.IRepo) *Domains {
+	user := userUC.NewUser(repo.Users())
+	class := classUC.NewClass(repo.Classes())
+	student := studentUC.NewStudent(repo.Students())
+	return &Domains{
+		User:    user,
+		Class:   class,
+		Student: student,
+	}
 }
 
 func (s *Server) InitRouter(domains *Domains) {

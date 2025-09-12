@@ -8,6 +8,8 @@ type Student struct {
 	Age               int    `json:"age"`
 	PhoneNumber       string `json:"phone_number"`
 	ParentPhoneNumber string `json:"parent_phone_number"`
+	Note              string `json:"note"`
+	IsActive          bool   `json:"is_active"`
 	CreatedAt         time.Time
 	UpdatedAt         time.Time
 }

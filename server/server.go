@@ -10,6 +10,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/ngoctb13/forya-be/config"
+	"github.com/ngoctb13/forya-be/infra"
+	"github.com/ngoctb13/forya-be/infra/repos"
 )
 
 type Server struct {
@@ -24,6 +26,18 @@ func NewServer(cfg *config.AppConfig) *Server {
 		router: router,
 		cfg:    cfg,
 	}
+}
+
+func (s *Server) Init() {
+	db, err := infra.InitPostgres(s.cfg.DB)
+	if err != nil {
+		panic(err)
+	}
+
+	repo := repos.NewSQLRepo(db, s.cfg.DB)
+	domains := s.InitDomains(repo)
+	s.InitCORS()
+	s.InitRouter(domains)
 }
 
 func (s *Server) ListenHTTP() error {

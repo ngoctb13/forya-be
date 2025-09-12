@@ -9,10 +9,6 @@ import (
 	"time"
 
 	"github.com/ngoctb13/forya-be/config"
-	"github.com/ngoctb13/forya-be/infra"
-	"github.com/ngoctb13/forya-be/infra/repos"
-	classUC "github.com/ngoctb13/forya-be/internal/domains/class/usecases"
-	userUC "github.com/ngoctb13/forya-be/internal/domains/user/usecases"
 	"github.com/ngoctb13/forya-be/server"
 	"github.com/ngoctb13/forya-be/setting"
 	"go.uber.org/zap"
@@ -34,20 +30,8 @@ func main() {
 
 	go setting.ConnectDatabase(cfg.DB)
 
-	db, err := infra.InitPostgres(cfg.DB)
-	rp := repos.NewSQLRepo(db, cfg.DB)
-	userRepo := rp.Users()
-	classRepo := rp.Classes()
-	userUsecases := userUC.NewUser(userRepo)
-	classUsescases := classUC.NewClass(classRepo)
-
 	s := server.NewServer(cfg)
-	domains := &server.Domains{
-		User:  userUsecases,
-		Class: classUsescases,
-	}
-	s.InitCORS()
-	s.InitRouter(domains)
+	s.Init()
 
 	serverErr := make(chan error, 1)
 	go func() {
