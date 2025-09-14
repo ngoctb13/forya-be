@@ -43,7 +43,7 @@ func (s *Server) InitDomains(repo repos.IRepo) *Domains {
 }
 
 func (s *Server) InitRouter(domains *Domains) {
-	hdl := handler.NewHandler(domains.User, domains.Class)
+	hdl := handler.NewHandler(domains.User, domains.Class, domains.Student)
 
 	authRouter := s.router.Group("api/auth")
 	hdl.ConfigRouteAuth(authRouter)

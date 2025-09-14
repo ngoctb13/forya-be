@@ -17,18 +17,40 @@ func NewStudentSQLRepo(db *gorm.DB) *studentSQLRepo {
 	}
 }
 
-func (s *studentSQLRepo) CreateStudent(ctx context.Context, class *models.Student) error {
+func (s *studentSQLRepo) CreateStudent(ctx context.Context, student *models.Student) error {
+	if err := s.db.WithContext(ctx).Create(student).Error; err != nil {
+		return err
+	}
 	return nil
 }
 
 func (s *studentSQLRepo) UpdateStudent(ctx context.Context, student *models.Student) (*models.Student, error) {
-	return nil, nil
+	if err := s.db.WithContext(ctx).Save(student).Error; err != nil {
+		return nil, err
+	}
+	return student, nil
 }
 
 func (s *studentSQLRepo) DeleteStudentByID(ctx context.Context, id string) (*models.Student, error) {
-	return nil, nil
+	var student models.Student
+	if err := s.db.WithContext(ctx).First(&student, "id = ?", id).Error; err != nil {
+		return nil, err
+	}
+
+	if err := s.db.WithContext(ctx).
+		Model(&student).
+		Update("is_active", false).Error; err != nil {
+		return nil, err
+	}
+
+	student.IsActive = false
+	return &student, nil
 }
 
 func (s *studentSQLRepo) GetStudentByID(ctx context.Context, id string) (*models.Student, error) {
-	return nil, nil
+	var student models.Student
+	if err := s.db.WithContext(ctx).First(&student, "id = ?", id).Error; err != nil {
+		return nil, err
+	}
+	return &student, nil
 }

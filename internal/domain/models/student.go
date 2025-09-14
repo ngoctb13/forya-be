@@ -13,3 +13,11 @@ type Student struct {
 	CreatedAt         time.Time
 	UpdatedAt         time.Time
 }
+
+type CreateStudentInput struct {
+	FullName          string
+	Age               int
+	PhoneNumber       string
+	ParentPhoneNumber string
+	Note              string
+}

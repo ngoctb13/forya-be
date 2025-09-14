@@ -1,6 +1,8 @@
 package usecases
 
 import (
+	"context"
+	"github.com/ngoctb13/forya-be/internal/domain/models"
 	"github.com/ngoctb13/forya-be/internal/domains/student/repos"
 )
 
@@ -12,4 +14,17 @@ func NewStudent(studentRepo repos.IStudentRepo) *Student {
 	return &Student{
 		studentRepo: studentRepo,
 	}
+}
+
+func (s *Student) CreateStudent(ctx context.Context, input *models.CreateStudentInput) error {
+	student := &models.Student{
+		FullName:          input.FullName,
+		Age:               input.Age,
+		PhoneNumber:       input.PhoneNumber,
+		ParentPhoneNumber: input.ParentPhoneNumber,
+		Note:              input.Note,
+		IsActive:          true,
+	}
+
+	return s.studentRepo.CreateStudent(ctx, student)
 }
