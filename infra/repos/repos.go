@@ -5,6 +5,7 @@ import (
 
 	"github.com/ngoctb13/forya-be/config"
 	classRp "github.com/ngoctb13/forya-be/internal/domains/class/repos"
+	classStudentRp "github.com/ngoctb13/forya-be/internal/domains/class_student/repos"
 	studentRp "github.com/ngoctb13/forya-be/internal/domains/student/repos"
 	userRp "github.com/ngoctb13/forya-be/internal/domains/user/repos"
 )
@@ -31,4 +32,8 @@ func (r *Repo) Classes() classRp.IClassRepo {
 
 func (r *Repo) Students() studentRp.IStudentRepo {
 	return NewStudentSQLRepo(r.db)
+}
+
+func (r *Repo) ClassStudent() classStudentRp.IClassStudentRepo {
+	return NewClassStudentSQLRepo(r.db)
 }

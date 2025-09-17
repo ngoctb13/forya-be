@@ -6,14 +6,16 @@ import (
 	"github.com/ngoctb13/forya-be/handler/middlewares"
 	"github.com/ngoctb13/forya-be/infra/repos"
 	classUC "github.com/ngoctb13/forya-be/internal/domains/class/usecases"
+	classStudentUC "github.com/ngoctb13/forya-be/internal/domains/class_student/usecases"
 	studentUC "github.com/ngoctb13/forya-be/internal/domains/student/usecases"
 	userUC "github.com/ngoctb13/forya-be/internal/domains/user/usecases"
 )
 
 type Domains struct {
-	User    *userUC.User
-	Class   *classUC.Class
-	Student *studentUC.Student
+	User         *userUC.User
+	Class        *classUC.Class
+	Student      *studentUC.Student
+	ClassStudent *classStudentUC.ClassStudent
 }
 
 func (s *Server) InitCORS() {
@@ -35,15 +37,17 @@ func (s *Server) InitDomains(repo repos.IRepo) *Domains {
 	user := userUC.NewUser(repo.Users())
 	class := classUC.NewClass(repo.Classes())
 	student := studentUC.NewStudent(repo.Students())
+	classStudent := classStudentUC.NewClassStudent(repo.ClassStudent())
 	return &Domains{
-		User:    user,
-		Class:   class,
-		Student: student,
+		User:         user,
+		Class:        class,
+		Student:      student,
+		ClassStudent: classStudent,
 	}
 }
 
 func (s *Server) InitRouter(domains *Domains) {
-	hdl := handler.NewHandler(domains.User, domains.Class, domains.Student)
+	hdl := handler.NewHandler(domains.User, domains.Class, domains.Student, domains.ClassStudent)
 
 	authRouter := s.router.Group("api/auth")
 	hdl.ConfigRouteAuth(authRouter)

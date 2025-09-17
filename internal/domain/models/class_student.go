@@ -9,3 +9,8 @@ type ClassStudent struct {
 	JoinedAt  time.Time `json:"joined_at"`
 	LeftAt    time.Time `json:"left_at"`
 }
+
+type EnrollStudentInput struct {
+	ClassID   string `json:"class_id"`
+	StudentID string `json:"student_id"`
+}

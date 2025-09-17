@@ -53,3 +53,49 @@ func (h *Handler) SearchClassByName() gin.HandlerFunc {
 		})
 	}
 }
+
+func (h *Handler) EnrollStudent() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		req := &models.EnrollStudentRequest{}
+		if err := c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		if pathClassID := c.Param("classId"); pathClassID != "" {
+			req.ClassID = pathClassID
+		}
+
+		err := h.classStudent.EnrollStudent(c, &dm.EnrollStudentInput{
+			ClassID:   req.ClassID,
+			StudentID: req.StudentID,
+		})
+
+		if err != nil {
+			log.Printf("EnrollStudentUsecase fail with error: %v", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"message": "enroll student successfully"})
+	}
+}
+
+func (h *Handler) DeleteStudentFromClass() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		classID := c.Param("classID")
+		studentID := c.Param("studentID")
+
+		if classID == "" || studentID == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "classID and studentID are required"})
+			return
+		}
+
+		if err := h.classStudent.DeleteStudentFromClass(c.Request.Context(), classID, studentID); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"message": "delete student from class successfully"})
+	}
+}

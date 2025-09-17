@@ -1,11 +1,12 @@
 package handler
 
 import (
+	"log"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/ngoctb13/forya-be/handler/models"
 	dm "github.com/ngoctb13/forya-be/internal/domain/models"
-	"log"
-	"net/http"
 )
 
 func (h *Handler) CreateStudent() gin.HandlerFunc {

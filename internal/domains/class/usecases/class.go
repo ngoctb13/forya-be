@@ -23,6 +23,8 @@ func (c *Class) CreateClass(ctx context.Context, input *models.CreateClassInput)
 		Name:        input.Name,
 		Description: input.Description,
 		Schedule:    time.Now().Weekday().String(),
+		CreatedAt:   time.Now(),
+		IsActive:    true,
 	}
 
 	return c.classRepo.CreateClass(ctx, class)
