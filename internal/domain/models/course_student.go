@@ -11,7 +11,7 @@ type CourseStudent struct {
 	StartedAt     time.Time `json:"started_at"`
 }
 
-type CreateCourseStudentInput struct {
-	StudentID string `json:"student_id"`
-	CourseID  string `json:"course_id"`
+type CreateCourseStudentsInput struct {
+	StudentIDs []string
+	CourseID   string
 }

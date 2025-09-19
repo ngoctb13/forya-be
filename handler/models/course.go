@@ -26,13 +26,13 @@ func (r *CreateCourseRequest) Validate() error {
 }
 
 type EnrollCourseRequest struct {
-	StudentID string `json:"student_id"`
-	CourseID  string `json:"course_id"`
+	StudentIDs []string `json:"student_ids"`
+	CourseID   string   `json:"course_id"`
 }
 
 func (r *EnrollCourseRequest) Validate() error {
-	if r.StudentID == "" {
-		return errors.New("student_id is required")
+	if len(r.StudentIDs) == 0 {
+		return errors.New("student_ids is required")
 	}
 
 	if r.CourseID == "" {

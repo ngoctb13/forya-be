@@ -20,3 +20,7 @@ func NewCourseStudentSQLRepo(db *gorm.DB) *courseStudentSQLRepo {
 func (r *courseStudentSQLRepo) Create(ctx context.Context, cs *models.CourseStudent) error {
 	return r.db.WithContext(ctx).Create(cs).Error
 }
+
+func (r *courseStudentSQLRepo) BatchCreate(ctx context.Context, cs []*models.CourseStudent) error {
+	return r.db.WithContext(ctx).Create(cs).Error
+}

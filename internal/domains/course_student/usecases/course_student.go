@@ -20,7 +20,9 @@ func NewCourseStudent(csr courseStudentRp.ICourseStudentRepo, cr courseRp.ICours
 	}
 }
 
-func (c *CourseStudent) CreateCourseStudent(ctx context.Context, input *models.CreateCourseStudentInput) error {
+func (c *CourseStudent) CreateCourseStudents(ctx context.Context, input *models.CreateCourseStudentsInput) error {
+	var csArr []*models.CourseStudent
+
 	course, err := c.courseRepo.GetByID(ctx, input.CourseID)
 	if err != nil {
 		return err
@@ -30,12 +32,16 @@ func (c *CourseStudent) CreateCourseStudent(ctx context.Context, input *models.C
 		return ErrCourseNotActive
 	}
 
-	cs := &models.CourseStudent{
-		StudentID:     input.StudentID,
-		CourseID:      input.CourseID,
-		RemainSession: course.SessionCount,
-		IsCompleted:   false,
+	for _, id := range input.StudentIDs {
+		cs := &models.CourseStudent{
+			StudentID:     id,
+			CourseID:      input.CourseID,
+			RemainSession: course.SessionCount,
+			IsCompleted:   false,
+		}
+
+		csArr = append(csArr, cs)
 	}
 
-	return c.courseStudentRepo.Create(ctx, cs)
+	return c.courseStudentRepo.BatchCreate(ctx, csArr)
 }

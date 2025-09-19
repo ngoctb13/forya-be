@@ -51,6 +51,10 @@ func (h *Handler) EnrollCourse() gin.HandlerFunc {
 			return
 		}
 
+		if pathCourseId := c.Param("courseId"); pathCourseId != "" {
+			req.CourseID = pathCourseId
+		}
+
 		err := req.Validate()
 		if err != nil {
 			log.Printf("validate request error: %v", err)
@@ -58,13 +62,13 @@ func (h *Handler) EnrollCourse() gin.HandlerFunc {
 			return
 		}
 
-		err = h.courseStudent.CreateCourseStudent(c, &dm.CreateCourseStudentInput{
-			CourseID:  req.CourseID,
-			StudentID: req.StudentID,
+		err = h.courseStudent.CreateCourseStudents(c, &dm.CreateCourseStudentsInput{
+			CourseID:   req.CourseID,
+			StudentIDs: req.StudentIDs,
 		})
 
 		if err != nil {
-			log.Printf("CreateCourseStudentUsecase fail with error: %v", err)
+			log.Printf("CreateCourseStudentsUsecase fail with error: %v", err)
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
