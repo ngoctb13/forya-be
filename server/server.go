@@ -12,6 +12,7 @@ import (
 	"github.com/ngoctb13/forya-be/config"
 	"github.com/ngoctb13/forya-be/infra"
 	"github.com/ngoctb13/forya-be/infra/repos"
+	"github.com/ngoctb13/forya-be/infra/txn"
 )
 
 type Server struct {
@@ -34,8 +35,9 @@ func (s *Server) Init() {
 		panic(err)
 	}
 
+	t := txn.NewTxn(db)
 	repo := repos.NewSQLRepo(db, s.cfg.DB)
-	domains := s.InitDomains(repo)
+	domains := s.InitDomains(repo, t)
 	s.InitCORS()
 	s.InitRouter(domains)
 }
