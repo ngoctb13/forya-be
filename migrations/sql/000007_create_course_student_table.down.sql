@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS course_student;
+DROP EXTENSION IF EXISTS "uuid-ossp";
