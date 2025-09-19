@@ -18,7 +18,14 @@ func (h *Handler) CreateClass() gin.HandlerFunc {
 			return
 		}
 
-		err := h.class.CreateClass(c, &dm.CreateClassInput{
+		err := req.Validate()
+		if err != nil {
+			log.Printf("validate request error: %v", err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		err = h.class.CreateClass(c, &dm.CreateClassInput{
 			Name:        req.Name,
 			Description: req.Description,
 		})
@@ -54,9 +61,9 @@ func (h *Handler) SearchClassByName() gin.HandlerFunc {
 	}
 }
 
-func (h *Handler) EnrollStudent() gin.HandlerFunc {
+func (h *Handler) EnrollClass() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		req := &models.EnrollStudentRequest{}
+		req := &models.EnrollClassRequest{}
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
@@ -66,28 +73,34 @@ func (h *Handler) EnrollStudent() gin.HandlerFunc {
 			req.ClassID = pathClassID
 		}
 
-		err := h.classStudent.EnrollStudent(c, &dm.EnrollStudentInput{
-			ClassID:   req.ClassID,
-			StudentID: req.StudentID,
+		err := req.Validate()
+		if err != nil {
+			log.Printf("validate request error: %v", err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		}
+
+		err = h.classStudent.EnrollClass(c, &dm.EnrollClassInput{
+			ClassID:    req.ClassID,
+			StudentIDs: req.StudentIDs,
 		})
 
 		if err != nil {
-			log.Printf("EnrollStudentUsecase fail with error: %v", err)
+			log.Printf("EnrollClassUsecase fail with error: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
 
-		c.JSON(http.StatusOK, gin.H{"message": "enroll student successfully"})
+		c.JSON(http.StatusOK, gin.H{"message": "enroll class successfully"})
 	}
 }
 
 func (h *Handler) DeleteStudentFromClass() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		classID := c.Param("classID")
-		studentID := c.Param("studentID")
+		classID := c.Param("classId")
+		studentID := c.Param("studentId")
 
 		if classID == "" || studentID == "" {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "classID and studentID are required"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": "classId and studentId are required"})
 			return
 		}
 

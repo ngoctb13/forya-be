@@ -10,7 +10,7 @@ type ClassStudent struct {
 	LeftAt    time.Time `json:"left_at"`
 }
 
-type EnrollStudentInput struct {
-	ClassID   string `json:"class_id"`
-	StudentID string `json:"student_id"`
+type EnrollClassInput struct {
+	ClassID    string
+	StudentIDs []string
 }

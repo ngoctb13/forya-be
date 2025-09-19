@@ -8,5 +8,6 @@ import (
 
 type IClassStudentRepo interface {
 	Create(ctx context.Context, cs *models.ClassStudent) error
+	BatchCreate(ctx context.Context, cs []*models.ClassStudent) error
 	MarkLeft(ctx context.Context, classID, studentID string) error
 }

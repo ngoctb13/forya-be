@@ -18,14 +18,21 @@ func NewClassStudent(classStudentRepo repos.IClassStudentRepo) *ClassStudent {
 	}
 }
 
-func (c *ClassStudent) EnrollStudent(ctx context.Context, input *models.EnrollStudentInput) error {
-	cs := &models.ClassStudent{
-		ClassID:   input.ClassID,
-		StudentID: input.StudentID,
-		JoinedAt:  time.Now(),
+func (c *ClassStudent) EnrollClass(ctx context.Context, input *models.EnrollClassInput) error {
+	var csArr []*models.ClassStudent
+	now := time.Now()
+
+	for _, id := range input.StudentIDs {
+		cs := &models.ClassStudent{
+			ClassID:   input.ClassID,
+			StudentID: id,
+			JoinedAt:  now,
+		}
+
+		csArr = append(csArr, cs)
 	}
 
-	return c.classStudentRepo.Create(ctx, cs)
+	return c.classStudentRepo.BatchCreate(ctx, csArr)
 }
 
 func (c *ClassStudent) DeleteStudentFromClass(ctx context.Context, classID, studentID string) error {

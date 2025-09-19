@@ -22,6 +22,10 @@ func (r *classStudentSQLRepo) Create(ctx context.Context, cs *models.ClassStuden
 	return r.db.WithContext(ctx).Create(cs).Error
 }
 
+func (r *classStudentSQLRepo) BatchCreate(ctx context.Context, cs []*models.ClassStudent) error {
+	return r.db.WithContext(ctx).Create(cs).Error
+}
+
 func (r *classStudentSQLRepo) MarkLeft(ctx context.Context, classID, studentID string) error {
 	return r.db.WithContext(ctx).
 		Model(&models.ClassStudent{}).
