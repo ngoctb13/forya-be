@@ -35,3 +35,11 @@ func (r CreateStudentRequest) Validate() error {
 
 	return nil
 }
+
+type StudentRecordRow struct {
+	FullName          string
+	Age               string
+	PhoneNumber       string
+	ParentPhoneNumber string
+	Note              string
+}

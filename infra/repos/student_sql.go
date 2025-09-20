@@ -24,6 +24,10 @@ func (s *studentSQLRepo) CreateStudent(ctx context.Context, student *models.Stud
 	return nil
 }
 
+func (s *studentSQLRepo) BatchCreate(ctx context.Context, students []*models.Student) error {
+	return s.db.WithContext(ctx).Create(students).Error
+}
+
 func (s *studentSQLRepo) UpdateStudent(ctx context.Context, student *models.Student) (*models.Student, error) {
 	if err := s.db.WithContext(ctx).Save(student).Error; err != nil {
 		return nil, err
