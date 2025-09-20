@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"github.com/ngoctb13/forya-be/pkg/csv"
 	"log"
 	"net/http"
 	"strconv"
@@ -9,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/ngoctb13/forya-be/handler/models"
 	dm "github.com/ngoctb13/forya-be/internal/domain/models"
+	"github.com/ngoctb13/forya-be/pkg/csv"
 )
 
 func (h *Handler) CreateStudent() gin.HandlerFunc {
@@ -95,6 +95,7 @@ func (h *Handler) ImportStudentsCSVFile() gin.HandlerFunc {
 				"total":   total,
 				"errors":  errMses,
 			})
+			return
 		}
 
 		var inputArr []*dm.CreateStudentInput
