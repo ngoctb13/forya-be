@@ -2,6 +2,7 @@ package usecases
 
 import (
 	"context"
+
 	"github.com/ngoctb13/forya-be/internal/domain/models"
 	"github.com/ngoctb13/forya-be/internal/domains/student/repos"
 )
@@ -46,4 +47,13 @@ func (s *Student) CreateStudents(ctx context.Context, inputs []*models.CreateStu
 	}
 
 	return s.studentRepo.BatchCreate(ctx, studentArr)
+}
+
+func (s *Student) ListClassStudents(ctx context.Context, input *models.ListClassStudentsInput) ([]*models.ClassEnrollments, error) {
+	opts := models.QueryOptions{
+		JoinedAt: input.JoinedAt,
+		LeftAt:   input.LeftAt,
+	}
+
+	return s.studentRepo.GetStudentsByClassID(ctx, input.ClassID, opts)
 }

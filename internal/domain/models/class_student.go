@@ -10,6 +10,15 @@ type ClassStudent struct {
 	LeftAt    time.Time `json:"left_at"`
 }
 
+func (ClassStudent) TableName() string {
+	return "class_student"
+}
+
+type QueryOptions struct {
+	JoinedAt *time.Time
+	LeftAt   *time.Time
+}
+
 type EnrollClassInput struct {
 	ClassID    string
 	StudentIDs []string

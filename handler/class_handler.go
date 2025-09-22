@@ -42,13 +42,13 @@ func (h *Handler) CreateClass() gin.HandlerFunc {
 
 func (h *Handler) SearchClassByName() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		name := c.Query("name")
-		if name == "" {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "missing query param: name"})
-			return
+		var nameInput *string
+		nameParam := c.Query("name")
+		if nameParam != "" {
+			nameInput = &nameParam
 		}
 
-		classes, err := h.class.SearchClassByName(c, name)
+		classes, err := h.class.SearchClassByName(c, nameInput)
 		if err != nil {
 			log.Printf("SearchClassByName fail with error: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

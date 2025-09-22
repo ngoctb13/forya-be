@@ -30,6 +30,6 @@ func (c *Class) CreateClass(ctx context.Context, input *models.CreateClassInput)
 	return c.classRepo.CreateClass(ctx, class)
 }
 
-func (c *Class) SearchClassByName(ctx context.Context, name string) ([]*models.Class, error) {
+func (c *Class) SearchClassByName(ctx context.Context, name *string) ([]*models.Class, error) {
 	return c.classRepo.GetClassContainName(ctx, name)
 }

@@ -12,4 +12,5 @@ type IStudentRepo interface {
 	UpdateStudent(ctx context.Context, student *models.Student) (*models.Student, error)
 	DeleteStudentByID(ctx context.Context, id string) (*models.Student, error)
 	GetStudentByID(ctx context.Context, id string) (*models.Student, error)
+	GetStudentsByClassID(ctx context.Context, classID string, queryOpts models.QueryOptions) ([]*models.ClassEnrollments, error)
 }

@@ -7,9 +7,9 @@ type Class struct {
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	Schedule    string    `json:"schedule"`
+	IsActive    bool      `json:"is_active"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
-	IsActive    bool      `json:"is_active"`
 }
 
 type CreateClassInput struct {

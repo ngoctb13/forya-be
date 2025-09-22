@@ -2,6 +2,7 @@ package repos
 
 import (
 	"context"
+	"time"
 
 	"github.com/ngoctb13/forya-be/internal/domain/models"
 	"gorm.io/gorm"
@@ -57,4 +58,41 @@ func (s *studentSQLRepo) GetStudentByID(ctx context.Context, id string) (*models
 		return nil, err
 	}
 	return &student, nil
+}
+
+func (s *studentSQLRepo) GetStudentsByClassID(ctx context.Context, classID string, queryOpts models.QueryOptions) ([]*models.ClassEnrollments, error) {
+	var results []struct {
+		models.Student
+		JoinedAt time.Time  `gorm:"column:joined_at"`
+		LeftAt   *time.Time `gorm:"column:left_at"`
+	}
+
+	q := s.db.WithContext(ctx).
+		Table("students").
+		Select("students.*, cs.joined_at, cs.left_at").
+		Joins("JOIN class_student cs ON cs.student_id = students.id").
+		Where("cs.class_id = ?", classID)
+
+	if queryOpts.JoinedAt != nil {
+		q = q.Where("cs.joined_at >= ?", queryOpts.JoinedAt)
+	}
+
+	if queryOpts.LeftAt != nil {
+		q = q.Where("cs.left_at >= ?", queryOpts.LeftAt)
+	}
+
+	if err := q.Find(&results).Error; err != nil {
+		return nil, err
+	}
+
+	var enriched []*models.ClassEnrollments
+	for _, r := range results {
+		enriched = append(enriched, &models.ClassEnrollments{
+			Student:  r.Student,
+			JoinedAt: r.JoinedAt,
+			LeftAt:   r.LeftAt,
+		})
+	}
+
+	return enriched, nil
 }

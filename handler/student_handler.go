@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/ngoctb13/forya-be/handler/models"
@@ -120,5 +121,54 @@ func (h *Handler) ImportStudentsCSVFile() gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK, gin.H{"message": "import students successfully"})
+	}
+}
+
+func (h *Handler) ListClassStudents() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var queryOpts struct {
+			joinedAt *time.Time
+			leftAt   *time.Time
+		}
+		classID := c.Param("classId")
+		if classID == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid classId"})
+			return
+		}
+
+		joinedAfterStr := c.Query("joined_after")
+		if joinedAfterStr != "" {
+			t, err := time.Parse(time.RFC3339, joinedAfterStr)
+			if err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
+
+			queryOpts.joinedAt = &t
+		}
+
+		leftAfterStr := c.Query("left_after")
+		if leftAfterStr != "" {
+			t, err := time.Parse(time.RFC3339, leftAfterStr)
+			if err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
+
+			queryOpts.leftAt = &t
+		}
+
+		studentArr, err := h.student.ListClassStudents(c, &dm.ListClassStudentsInput{
+			ClassID:  classID,
+			JoinedAt: queryOpts.joinedAt,
+			LeftAt:   queryOpts.leftAt,
+		})
+		if err != nil {
+			log.Printf("ListClassStudentsUsecase fail with error: %v", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, studentArr)
 	}
 }

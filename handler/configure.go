@@ -46,6 +46,7 @@ func (h *Handler) ConfigRouteAPI(router *gin.RouterGroup) {
 	// student
 	router.POST("/student/create", middlewares.AdminOnly(), h.CreateStudent())
 	router.POST("student/import", middlewares.AdminOnly(), h.ImportStudentsCSVFile())
+	router.GET("/student/list/:classId", middlewares.AdminOnly(), h.ListClassStudents())
 
 	// course
 	router.POST("/course/create", middlewares.AdminOnly(), h.CreateCourse())
