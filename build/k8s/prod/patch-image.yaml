@@ -1,0 +1,11 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: forya-be
+  namespace: forya
+spec:
+  template:
+    spec:
+      containers:
+        - name: forya-be
+          image: your-dockerhub-username/forya-be:PROD_TAG

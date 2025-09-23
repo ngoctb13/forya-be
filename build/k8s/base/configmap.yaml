@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: forya-config
+  namespace: forya
+data:
+  LOG_LEVEL: "info"
+  FEATURE_FLAG_X: "true"
