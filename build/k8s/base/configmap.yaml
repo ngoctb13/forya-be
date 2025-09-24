@@ -2,7 +2,10 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: forya-config
-  namespace: forya
+  namespace: forya-prod
 data:
-  LOG_LEVEL: "info"
-  FEATURE_FLAG_X: "true"
+  DB_DRIVER_NAME: "postgres"
+  DB_MAX_OPEN_CONNS: "5"
+  DB_MAX_IDLE_CONNS: "5"
+  DB_CONN_MAX_LIFE_TIME_MS: "36000000"
+  DB_IS_DEV_MODE: "false"

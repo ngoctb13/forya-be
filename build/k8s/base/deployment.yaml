@@ -2,9 +2,16 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: forya-be
-  namespace: forya
+  labels:
+    app: forya-be
 spec:
   replicas: 2
+  revisionHistoryLimit: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   selector:
     matchLabels:
       app: forya-be
@@ -15,7 +22,7 @@ spec:
     spec:
       containers:
         - name: forya-be
-          image: your-dockerhub-username/forya-be:latest
+          image: ngoctb13/forya-be:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
@@ -24,6 +31,18 @@ spec:
                 name: forya-config
             - secretRef:
                 name: forya-secrets
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 15
           resources:
             requests:
               cpu: "100m"
@@ -31,19 +50,3 @@ spec:
             limits:
               cpu: "500m"
               memory: "512Mi"
-          livenessProbe:
-            httpGet:
-              path: /healthz
-              port: 8080
-            initialDelaySeconds: 10
-            periodSeconds: 10
-            failureThreshold: 3
-          readinessProbe:
-            httpGet:
-              path: /ready
-              port: 8080
-            initialDelaySeconds: 5
-            periodSeconds: 5
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000

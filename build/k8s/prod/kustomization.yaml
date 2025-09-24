@@ -1,5 +1,7 @@
+namespace: forya-prod
+
 resources:
   - ../base
-patchesStrategicMerge:
-  - patch-image.yaml
-  - patch-replicas.yaml
+
+patches:
+  - path: ingress.yaml

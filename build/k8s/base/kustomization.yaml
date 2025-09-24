@@ -1,8 +1,6 @@
 resources:
-  - namespace.yaml
-  - configmap.yaml
-  - secret.yaml
   - deployment.yaml
   - service.yaml
-  - hpa.yaml
-  - pdb.yaml
+  - configmap.yaml
+  - secrets.yaml
+  - postgres.yaml
