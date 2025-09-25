@@ -7,6 +7,7 @@ import (
 	classStudentUC "github.com/ngoctb13/forya-be/internal/domains/class_student/usecases"
 	courseUC "github.com/ngoctb13/forya-be/internal/domains/course/usecases"
 	courseStudentUC "github.com/ngoctb13/forya-be/internal/domains/course_student/usecases"
+	authUC "github.com/ngoctb13/forya-be/internal/domains/refresh_token/usecases"
 	studentUC "github.com/ngoctb13/forya-be/internal/domains/student/usecases"
 	userUC "github.com/ngoctb13/forya-be/internal/domains/user/usecases"
 )
@@ -18,6 +19,7 @@ type Handler struct {
 	classStudent  *classStudentUC.ClassStudent
 	course        *courseUC.Course
 	courseStudent *courseStudentUC.CourseStudent
+	auth          *authUC.Auth
 }
 
 func NewHandler(user *userUC.User,
@@ -25,7 +27,8 @@ func NewHandler(user *userUC.User,
 	student *studentUC.Student,
 	classStudent *classStudentUC.ClassStudent,
 	course *courseUC.Course,
-	courseStudent *courseStudentUC.CourseStudent) *Handler {
+	courseStudent *courseStudentUC.CourseStudent,
+	auth *authUC.Auth) *Handler {
 	return &Handler{
 		user:          user,
 		class:         class,
@@ -33,6 +36,7 @@ func NewHandler(user *userUC.User,
 		classStudent:  classStudent,
 		course:        course,
 		courseStudent: courseStudent,
+		auth:          auth,
 	}
 }
 
@@ -56,4 +60,5 @@ func (h *Handler) ConfigRouteAPI(router *gin.RouterGroup) {
 func (h *Handler) ConfigRouteAuth(router *gin.RouterGroup) {
 	router.POST("/login", h.Login())
 	router.POST("/register", h.Register())
+	router.POST("/refresh", h.Refresh())
 }

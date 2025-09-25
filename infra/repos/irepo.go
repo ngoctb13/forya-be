@@ -5,6 +5,7 @@ import (
 	classStudentRp "github.com/ngoctb13/forya-be/internal/domains/class_student/repos"
 	courseRp "github.com/ngoctb13/forya-be/internal/domains/course/repos"
 	courseStudentRp "github.com/ngoctb13/forya-be/internal/domains/course_student/repos"
+	refreshTokenRp "github.com/ngoctb13/forya-be/internal/domains/refresh_token/repos"
 	studentRp "github.com/ngoctb13/forya-be/internal/domains/student/repos"
 	userRp "github.com/ngoctb13/forya-be/internal/domains/user/repos"
 )
@@ -16,4 +17,5 @@ type IRepo interface {
 	ClassStudent() classStudentRp.IClassStudentRepo
 	Courses() courseRp.ICourseRepo
 	CourseStudent() courseStudentRp.ICourseStudentRepo
+	RefreshToken() refreshTokenRp.IRefreshTokenRepo
 }

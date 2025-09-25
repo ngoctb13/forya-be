@@ -7,7 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/ngoctb13/forya-be/handler/models"
 	dm "github.com/ngoctb13/forya-be/internal/domain/models"
-	"github.com/ngoctb13/forya-be/pkg/auth"
 	"github.com/ngoctb13/forya-be/utils"
 )
 
@@ -27,7 +26,7 @@ func (h *Handler) Login() gin.HandlerFunc {
 
 		user, err := h.user.GetUserByUsername(c, req.UserName)
 		if err != nil {
-			log.Printf("GetUserByUsername got error: %v", err)
+			log.Printf("GetUserByUsernameUsecase got error: %v", err)
 			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		}
 
@@ -38,14 +37,24 @@ func (h *Handler) Login() gin.HandlerFunc {
 			return
 		}
 
-		token, err := auth.GenerateJWT(user.ID, user.Role)
+		at, err := h.auth.GenerateAccessToken(user.ID, user.Role)
 		if err != nil {
-			log.Printf("GenerateJWT got error: %v", err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			log.Printf("GenerateAccessTokenUsecase got error: %v", err)
+			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			return
 		}
 
-		c.JSON(http.StatusOK, gin.H{"token": token})
+		rt, err := h.auth.GenerateRefreshToken(c, user.ID, user.Role)
+		if err != nil {
+			log.Printf("GenerateRefreshTokenUsecase got error: %v", err)
+			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"token":         at,
+			"refresh_token": rt,
+		})
 	}
 }
 
@@ -85,5 +94,31 @@ func (h *Handler) Register() gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK, gin.H{"message": "register successfully"})
+	}
+}
+
+func (h *Handler) Refresh() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req struct {
+			RefreshToken string `json:"refresh_token"`
+		}
+
+		if err := c.ShouldBind(req); err != nil {
+			log.Printf("parse request with error: %v", err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		at, rt, err := h.auth.RefreshAccessToken(c, req.RefreshToken)
+		if err != nil {
+			log.Printf("RefreshAccessTokenUsecase got error: %v", err)
+			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"token":         at,
+			"refresh_token": rt,
+		})
 	}
 }
