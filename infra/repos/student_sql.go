@@ -29,13 +29,6 @@ func (s *studentSQLRepo) BatchCreate(ctx context.Context, students []*models.Stu
 	return s.db.WithContext(ctx).Create(students).Error
 }
 
-func (s *studentSQLRepo) UpdateStudent(ctx context.Context, student *models.Student) (*models.Student, error) {
-	if err := s.db.WithContext(ctx).Save(student).Error; err != nil {
-		return nil, err
-	}
-	return student, nil
-}
-
 func (s *studentSQLRepo) DeleteStudentByID(ctx context.Context, id string) (*models.Student, error) {
 	var student models.Student
 	if err := s.db.WithContext(ctx).First(&student, "id = ?", id).Error; err != nil {
@@ -95,4 +88,49 @@ func (s *studentSQLRepo) GetStudentsByClassID(ctx context.Context, classID strin
 	}
 
 	return enriched, nil
+}
+
+func (s *studentSQLRepo) UpdateWithMap(ctx context.Context, studentID string, fields map[string]interface{}) (*models.Student, error) {
+	student := &models.Student{}
+
+	if err := s.db.WithContext(ctx).
+		Model(student).
+		Where("id = ?", studentID).
+		Updates(fields).Error; err != nil {
+		return nil, err
+	}
+
+	if err := s.db.WithContext(ctx).
+		First(student, "id = ?", studentID).Error; err != nil {
+		return nil, err
+	}
+
+	return student, nil
+}
+
+func (s *studentSQLRepo) List(ctx context.Context, input *models.ListStudentsInput) ([]*models.Student, error) {
+	query := s.db.WithContext(ctx).Model(&models.Student{})
+
+	if input.FullName != nil {
+		query = query.Where("unaccent(lower(name)) ILIKE unaccent(lower(?))", "%"+*input.FullName+"%")
+	}
+	if input.AgeMin != nil {
+		query = query.Where("age >= ?", *input.AgeMin)
+	}
+	if input.AgeMax != nil {
+		query = query.Where("age <= ?", *input.AgeMax)
+	}
+	if input.PhoneNumber != nil {
+		query = query.Where("phone_number ILIKE ?", "%"+*input.PhoneNumber+"%")
+	}
+	if input.ParentPhoneNumber != nil {
+		query = query.Where("parent_phone_number ILIKE ?", "%"+*input.ParentPhoneNumber+"%")
+	}
+
+	var students []*models.Student
+	if err := query.Find(&students).Error; err != nil {
+		return nil, err
+	}
+	
+	return students, nil
 }

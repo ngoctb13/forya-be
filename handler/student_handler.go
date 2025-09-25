@@ -172,3 +172,63 @@ func (h *Handler) ListClassStudents() gin.HandlerFunc {
 		c.JSON(http.StatusOK, studentArr)
 	}
 }
+
+func (h *Handler) UpdateStudent() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		studentId := c.Param("studentId")
+		if studentId == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid classId"})
+			return
+		}
+
+		req := &models.UpdateStudentRequest{}
+		if err := c.ShouldBind(req); err != nil {
+			log.Printf("parse request error: %v", err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		if err := req.Validate(); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		s, err := h.student.UpdateStudent(c, &dm.UpdateStudentInput{
+			StudentID: studentId,
+			Fields:    req.Fields,
+		})
+
+		if err != nil {
+			log.Printf("UpdateStudentUsecase fail with error: %v", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, s)
+	}
+}
+
+func (h *Handler) SearchStudents() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		req := &models.SearchStudentsRequest{}
+		if err := c.ShouldBindQuery(req); err != nil {
+			log.Printf("parse request error: %v", err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		students, err := h.student.ListStudents(c, &dm.ListStudentsInput{
+			FullName:          req.FullName,
+			AgeMin:            req.AgeMin,
+			AgeMax:            req.AgeMax,
+			PhoneNumber:       req.PhoneNumber,
+			ParentPhoneNumber: req.ParentPhoneNumber,
+		})
+		if err != nil {
+			log.Printf("ListStudentsUsecase fail with error: %v", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, students)
+	}
+}

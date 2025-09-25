@@ -57,3 +57,11 @@ func (s *Student) ListClassStudents(ctx context.Context, input *models.ListClass
 
 	return s.studentRepo.GetStudentsByClassID(ctx, input.ClassID, opts)
 }
+
+func (s *Student) UpdateStudent(ctx context.Context, input *models.UpdateStudentInput) (*models.Student, error) {
+	return s.studentRepo.UpdateWithMap(ctx, input.StudentID, input.Fields)
+}
+
+func (s *Student) ListStudents(ctx context.Context, input *models.ListStudentsInput) ([]*models.Student, error) {
+	return s.studentRepo.List(ctx, input)
+}
