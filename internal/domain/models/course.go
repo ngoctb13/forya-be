@@ -19,3 +19,8 @@ type CreateCourseInput struct {
 	SessionCount    int
 	PricePerSession int
 }
+
+type UpdateCourseInput struct {
+	CourseID string
+	Fields   map[string]interface{}
+}

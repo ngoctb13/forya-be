@@ -2,6 +2,7 @@ package usecases
 
 import (
 	"context"
+	"errors"
 
 	"github.com/ngoctb13/forya-be/internal/domain/models"
 	"github.com/ngoctb13/forya-be/internal/domains/course/repos"
@@ -27,4 +28,15 @@ func (c *Course) CreateCourse(ctx context.Context, input *models.CreateCourseInp
 	}
 
 	return c.courseRepo.Create(ctx, course)
+}
+
+func (c *Course) UpdateCourse(ctx context.Context, input *models.UpdateCourseInput) (*models.Course, error) {
+	course, err := c.courseRepo.GetByID(ctx, input.CourseID)
+	if err != nil {
+		return nil, err
+	}
+	if course == nil {
+		return nil, errors.New("course not found")
+	}
+	return c.courseRepo.UpdateWithMap(ctx, input.CourseID, input.Fields)
 }

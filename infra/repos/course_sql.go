@@ -53,3 +53,21 @@ func (r *courseSQLRepo) SearchByName(ctx context.Context, keyword string) ([]*mo
 		Find(&courses).Error
 	return courses, err
 }
+
+func (r *courseSQLRepo) UpdateWithMap(ctx context.Context, id string, fields map[string]interface{}) (*models.Course, error) {
+	course := &models.Course{}
+
+	if err := r.db.WithContext(ctx).
+		Model(course).
+		Where("id = ?", id).
+		Updates(fields).Error; err != nil {
+		return nil, err
+	}
+
+	if err := r.db.WithContext(ctx).
+		First(course, "id = ?", id).Error; err != nil {
+		return nil, err
+	}
+
+	return course, nil
+}

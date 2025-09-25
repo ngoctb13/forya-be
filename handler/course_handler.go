@@ -76,3 +76,37 @@ func (h *Handler) EnrollCourse() gin.HandlerFunc {
 		c.JSON(http.StatusOK, gin.H{"message": "enroll course successfully"})
 	}
 }
+
+func (h *Handler) UpdateCourse() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		courseId := c.Param("courseId")
+		if courseId == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid classId"})
+			return
+		}
+
+		req := &models.UpdateCourseRequest{}
+		if err := c.ShouldBind(req); err != nil {
+			log.Printf("parse request error: %v", err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		if err := req.Validate(); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		course, err := h.course.UpdateCourse(c, &dm.UpdateCourseInput{
+			CourseID: courseId,
+			Fields:   req.Fields,
+		})
+
+		if err != nil {
+			log.Printf("UpdateCourseUsecase fail with error: %v", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, course)
+	}
+}

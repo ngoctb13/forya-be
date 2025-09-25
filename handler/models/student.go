@@ -85,11 +85,6 @@ func (r *UpdateStudentRequest) Validate() error {
 			if !ok || !phoneRegex.MatchString(phone) {
 				return fmt.Errorf("invalid %s: must be a valid phone number", k)
 			}
-		case "note":
-			_, ok := v.(string)
-			if !ok {
-				return errors.New("invalid note: must be a string")
-			}
 		}
 	}
 

@@ -1,6 +1,8 @@
 package models
 
-import "errors"
+import (
+	"errors"
+)
 
 type CreateCourseRequest struct {
 	Name            string `json:"name"`
@@ -37,6 +39,49 @@ func (r *EnrollCourseRequest) Validate() error {
 
 	if r.CourseID == "" {
 		return errors.New("course_id is required")
+	}
+
+	return nil
+}
+
+type UpdateCourseRequest struct {
+	Fields map[string]interface{} `json:"fields" binding:"required"`
+}
+
+func (r *UpdateCourseRequest) Validate() error {
+	if len(r.Fields) == 0 {
+		return errors.New("no field provided")
+	}
+
+	allowed := map[string]bool{
+		"name":              true,
+		"description":       true,
+		"session_count":     true,
+		"price_per_session": true,
+	}
+
+	for k, v := range r.Fields {
+		if !allowed[k] {
+			return errors.New("field is invalid")
+		}
+
+		switch k {
+		case "name":
+			name, ok := v.(string)
+			if !ok || len(name) < 2 {
+				return errors.New("invalid name: must be a string with length >= 2")
+			}
+		case "session_count":
+			sc, ok := v.(int)
+			if !ok || sc < 0 {
+				return errors.New("invalid session_count: must be a positive number")
+			}
+		case "price_per_session":
+			pps, ok := v.(int)
+			if !ok || pps < 0 {
+				return errors.New("invalid age: must be a positive number")
+			}
+		}
 	}
 
 	return nil

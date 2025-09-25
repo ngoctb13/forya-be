@@ -43,6 +43,7 @@ func NewHandler(user *userUC.User,
 func (h *Handler) ConfigRouteAPI(router *gin.RouterGroup) {
 	// user
 	router.POST("/user/logout", h.Logout())
+
 	// class
 	router.POST("/class/create", middlewares.AdminOnly(), h.CreateClass())
 	router.GET("/class/search", h.SearchClassByName())
@@ -58,6 +59,7 @@ func (h *Handler) ConfigRouteAPI(router *gin.RouterGroup) {
 
 	// course
 	router.POST("/course/create", middlewares.AdminOnly(), h.CreateCourse())
+	router.PATCH("/course/:courseId/update", middlewares.AdminOnly(), h.UpdateCourse())
 	router.POST("/course/:courseId/enroll", middlewares.AdminOnly(), h.EnrollCourse())
 }
 

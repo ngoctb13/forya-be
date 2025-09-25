@@ -2,6 +2,7 @@ package usecases
 
 import (
 	"context"
+	"errors"
 
 	"github.com/ngoctb13/forya-be/internal/domain/models"
 	"github.com/ngoctb13/forya-be/internal/domains/student/repos"
@@ -59,6 +60,14 @@ func (s *Student) ListClassStudents(ctx context.Context, input *models.ListClass
 }
 
 func (s *Student) UpdateStudent(ctx context.Context, input *models.UpdateStudentInput) (*models.Student, error) {
+	student, err := s.studentRepo.GetStudentByID(ctx, input.StudentID)
+	if err != nil {
+		return nil, err
+	}
+	if student == nil {
+		return nil, errors.New("student not found")
+	}
+
 	return s.studentRepo.UpdateWithMap(ctx, input.StudentID, input.Fields)
 }
 
