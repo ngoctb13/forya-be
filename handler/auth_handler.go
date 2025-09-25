@@ -122,3 +122,26 @@ func (h *Handler) Refresh() gin.HandlerFunc {
 		})
 	}
 }
+
+func (h *Handler) Logout() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req struct {
+			RefreshToken string `json:"refresh_token" binding:"required"`
+		}
+
+		if err := c.ShouldBindJSON(&req); err != nil {
+			log.Printf("parse request with error: %v", err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": "refresh_token is required"})
+			return
+		}
+
+		err := h.auth.RevokeAccessToken(c, req.RefreshToken)
+		if err != nil {
+			log.Printf("RevokeAccessTokenUsecase got error: %v", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"message": "logout successful"})
+	}
+}

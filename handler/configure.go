@@ -41,6 +41,8 @@ func NewHandler(user *userUC.User,
 }
 
 func (h *Handler) ConfigRouteAPI(router *gin.RouterGroup) {
+	// user
+	router.POST("/user/logout", h.Logout())
 	// class
 	router.POST("/class/create", middlewares.AdminOnly(), h.CreateClass())
 	router.GET("/class/search", h.SearchClassByName())

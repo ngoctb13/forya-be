@@ -70,6 +70,24 @@ func (a *Auth) RefreshAccessToken(ctx context.Context, token string) (string, *m
 	return at, newRT, nil
 }
 
+func (a *Auth) RevokeAccessToken(ctx context.Context, token string) error {
+	rt, err := a.refreshTokenRp.GetByToken(ctx, token)
+	if err != nil {
+		return err
+	}
+
+	if rt == nil || rt.Revoked || rt.ExpiresAt.Before(time.Now()) {
+		return errors.New("invalid refresh token")
+	}
+
+	err = a.refreshTokenRp.Revoke(ctx, token)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (a *Auth) generateRandomString(len int) (string, error) {
 	b := make([]byte, len)
 	if _, err := rand.Read(b); err != nil {
