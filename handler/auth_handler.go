@@ -6,7 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/ngoctb13/forya-be/handler/models"
-	dm "github.com/ngoctb13/forya-be/internal/domain/models"
+	"github.com/ngoctb13/forya-be/internal/domains/inputs"
 	"github.com/ngoctb13/forya-be/utils"
 )
 
@@ -81,7 +81,7 @@ func (h *Handler) Register() gin.HandlerFunc {
 			return
 		}
 
-		err = h.user.CreateUser(c, &dm.CreateUserInput{
+		err = h.user.CreateUser(c, &inputs.CreateUserInput{
 			Email:    req.Email,
 			UserName: req.UserName,
 			Password: hashPwd,

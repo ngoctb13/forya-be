@@ -108,29 +108,29 @@ func (s *studentSQLRepo) UpdateWithMap(ctx context.Context, studentID string, fi
 	return student, nil
 }
 
-func (s *studentSQLRepo) List(ctx context.Context, input *models.ListStudentsInput) ([]*models.Student, error) {
+func (s *studentSQLRepo) List(ctx context.Context, filters *models.ListFilter) ([]*models.Student, error) {
 	query := s.db.WithContext(ctx).Model(&models.Student{})
 
-	if input.FullName != nil {
-		query = query.Where("unaccent(lower(name)) ILIKE unaccent(lower(?))", "%"+*input.FullName+"%")
+	if filters.FullName != nil {
+		query = query.Where("unaccent(lower(name)) ILIKE unaccent(lower(?))", "%"+*filters.FullName+"%")
 	}
-	if input.AgeMin != nil {
-		query = query.Where("age >= ?", *input.AgeMin)
+	if filters.AgeMin != nil {
+		query = query.Where("age >= ?", *filters.AgeMin)
 	}
-	if input.AgeMax != nil {
-		query = query.Where("age <= ?", *input.AgeMax)
+	if filters.AgeMax != nil {
+		query = query.Where("age <= ?", *filters.AgeMax)
 	}
-	if input.PhoneNumber != nil {
-		query = query.Where("phone_number ILIKE ?", "%"+*input.PhoneNumber+"%")
+	if filters.PhoneNumber != nil {
+		query = query.Where("phone_number ILIKE ?", "%"+*filters.PhoneNumber+"%")
 	}
-	if input.ParentPhoneNumber != nil {
-		query = query.Where("parent_phone_number ILIKE ?", "%"+*input.ParentPhoneNumber+"%")
+	if filters.ParentPhoneNumber != nil {
+		query = query.Where("parent_phone_number ILIKE ?", "%"+*filters.ParentPhoneNumber+"%")
 	}
 
 	var students []*models.Student
 	if err := query.Find(&students).Error; err != nil {
 		return nil, err
 	}
-	
+
 	return students, nil
 }

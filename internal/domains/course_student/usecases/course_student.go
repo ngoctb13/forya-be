@@ -6,6 +6,7 @@ import (
 	"github.com/ngoctb13/forya-be/internal/domain/models"
 	courseRp "github.com/ngoctb13/forya-be/internal/domains/course/repos"
 	courseStudentRp "github.com/ngoctb13/forya-be/internal/domains/course_student/repos"
+	"github.com/ngoctb13/forya-be/internal/domains/inputs"
 )
 
 type CourseStudent struct {
@@ -20,7 +21,7 @@ func NewCourseStudent(csr courseStudentRp.ICourseStudentRepo, cr courseRp.ICours
 	}
 }
 
-func (c *CourseStudent) CreateCourseStudents(ctx context.Context, input *models.CreateCourseStudentsInput) error {
+func (c *CourseStudent) CreateCourseStudents(ctx context.Context, input *inputs.CreateCourseStudentsInput) error {
 	var csArr []*models.CourseStudent
 
 	course, err := c.courseRepo.GetByID(ctx, input.CourseID)

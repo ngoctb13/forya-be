@@ -6,7 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/ngoctb13/forya-be/handler/models"
-	dm "github.com/ngoctb13/forya-be/internal/domain/models"
+	"github.com/ngoctb13/forya-be/internal/domains/inputs"
 )
 
 func (h *Handler) CreateClass() gin.HandlerFunc {
@@ -25,7 +25,7 @@ func (h *Handler) CreateClass() gin.HandlerFunc {
 			return
 		}
 
-		err = h.class.CreateClass(c, &dm.CreateClassInput{
+		err = h.class.CreateClass(c, &inputs.CreateClassInput{
 			Name:        req.Name,
 			Description: req.Description,
 		})
@@ -79,7 +79,7 @@ func (h *Handler) EnrollClass() gin.HandlerFunc {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		}
 
-		err = h.classStudent.EnrollClass(c, &dm.EnrollClassInput{
+		err = h.classStudent.EnrollClass(c, &inputs.EnrollClassInput{
 			ClassID:    req.ClassID,
 			StudentIDs: req.StudentIDs,
 		})

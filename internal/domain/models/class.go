@@ -11,8 +11,3 @@ type Class struct {
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
 }
-
-type CreateClassInput struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
-}

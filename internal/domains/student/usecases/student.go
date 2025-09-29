@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/ngoctb13/forya-be/internal/domain/models"
+	"github.com/ngoctb13/forya-be/internal/domains/inputs"
 	"github.com/ngoctb13/forya-be/internal/domains/student/repos"
 )
 
@@ -18,7 +19,7 @@ func NewStudent(studentRepo repos.IStudentRepo) *Student {
 	}
 }
 
-func (s *Student) CreateStudent(ctx context.Context, input *models.CreateStudentInput) error {
+func (s *Student) CreateStudent(ctx context.Context, input *inputs.CreateStudentInput) error {
 	student := &models.Student{
 		FullName:          input.FullName,
 		Age:               input.Age,
@@ -31,7 +32,7 @@ func (s *Student) CreateStudent(ctx context.Context, input *models.CreateStudent
 	return s.studentRepo.CreateStudent(ctx, student)
 }
 
-func (s *Student) CreateStudents(ctx context.Context, inputs []*models.CreateStudentInput) error {
+func (s *Student) CreateStudents(ctx context.Context, inputs []*inputs.CreateStudentInput) error {
 	var studentArr []*models.Student
 
 	for _, input := range inputs {
@@ -50,7 +51,7 @@ func (s *Student) CreateStudents(ctx context.Context, inputs []*models.CreateStu
 	return s.studentRepo.BatchCreate(ctx, studentArr)
 }
 
-func (s *Student) ListClassStudents(ctx context.Context, input *models.ListClassStudentsInput) ([]*models.ClassEnrollments, error) {
+func (s *Student) ListClassStudents(ctx context.Context, input *inputs.ListClassStudentsInput) ([]*models.ClassEnrollments, error) {
 	opts := models.QueryOptions{
 		JoinedAt: input.JoinedAt,
 		LeftAt:   input.LeftAt,
@@ -59,7 +60,7 @@ func (s *Student) ListClassStudents(ctx context.Context, input *models.ListClass
 	return s.studentRepo.GetStudentsByClassID(ctx, input.ClassID, opts)
 }
 
-func (s *Student) UpdateStudent(ctx context.Context, input *models.UpdateStudentInput) (*models.Student, error) {
+func (s *Student) UpdateStudent(ctx context.Context, input *inputs.UpdateStudentInput) (*models.Student, error) {
 	student, err := s.studentRepo.GetStudentByID(ctx, input.StudentID)
 	if err != nil {
 		return nil, err
@@ -71,6 +72,12 @@ func (s *Student) UpdateStudent(ctx context.Context, input *models.UpdateStudent
 	return s.studentRepo.UpdateWithMap(ctx, input.StudentID, input.Fields)
 }
 
-func (s *Student) ListStudents(ctx context.Context, input *models.ListStudentsInput) ([]*models.Student, error) {
-	return s.studentRepo.List(ctx, input)
+func (s *Student) ListStudents(ctx context.Context, input *inputs.ListStudentsInput) ([]*models.Student, error) {
+	return s.studentRepo.List(ctx, &models.ListFilter{
+		FullName:          input.FullName,
+		AgeMin:            input.AgeMin,
+		AgeMax:            input.AgeMax,
+		PhoneNumber:       input.PhoneNumber,
+		ParentPhoneNumber: input.ParentPhoneNumber,
+	})
 }

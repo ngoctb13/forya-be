@@ -6,6 +6,7 @@ import (
 
 	"github.com/ngoctb13/forya-be/internal/domain/models"
 	"github.com/ngoctb13/forya-be/internal/domains/class_student/repos"
+	"github.com/ngoctb13/forya-be/internal/domains/inputs"
 )
 
 type ClassStudent struct {
@@ -18,7 +19,7 @@ func NewClassStudent(classStudentRepo repos.IClassStudentRepo) *ClassStudent {
 	}
 }
 
-func (c *ClassStudent) EnrollClass(ctx context.Context, input *models.EnrollClassInput) error {
+func (c *ClassStudent) EnrollClass(ctx context.Context, input *inputs.EnrollClassInput) error {
 	var csArr []*models.ClassStudent
 	now := time.Now()
 

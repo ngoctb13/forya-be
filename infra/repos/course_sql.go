@@ -27,12 +27,45 @@ func (r *courseSQLRepo) GetByID(ctx context.Context, id string) (*models.Course,
 	return &course, nil
 }
 
-func (r *courseSQLRepo) GetAll(ctx context.Context) ([]*models.Course, error) {
+func (r *courseSQLRepo) GetAll(ctx context.Context, filter *models.GetAllFilter) ([]*models.Course, error) {
 	var courses []*models.Course
-	if err := r.db.WithContext(ctx).Find(&courses).Error; err != nil {
-		return nil, err
+	q := r.db.WithContext(ctx).Model(&models.Course{})
+
+	if filter.Name != nil {
+		q = q.Where("unaccent(lower(name)) ILIKE unaccent(lower(?))", "%"+*filter.Name+"%")
 	}
-	return courses, nil
+
+	if filter.Description != nil {
+		q = q.Where("unaccent(lower(description)) ILIKE unaccent(lower(?))", "%"+*filter.Description+"%")
+	}
+
+	if filter.SessionCount != nil {
+		q = q.Where("session_count = ?", *filter.SessionCount)
+	}
+
+	if filter.PriceMin != nil {
+		q = q.Where("price_per_session >= ?", *filter.PriceMin)
+	}
+
+	if filter.PriceMax != nil {
+		q = q.Where("price_per_session <= ?", *filter.PriceMax)
+	}
+
+	if filter.OrderBy != nil {
+		switch *filter.OrderBy {
+		case "price_asc":
+			q = q.Order("price_per_session ASC")
+		case "price_desc":
+			q = q.Order("price_per_session DESC")
+		case "session_count_asc":
+			q = q.Order("session_count ASC")
+		case "session_count_desc":
+			q = q.Order("session_count DESC")
+		}
+	}
+
+	err := q.Find(&courses).Error
+	return courses, err
 }
 
 func (r *courseSQLRepo) Update(ctx context.Context, c *models.Course) error {

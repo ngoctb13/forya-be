@@ -8,7 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/ngoctb13/forya-be/handler/models"
-	dm "github.com/ngoctb13/forya-be/internal/domain/models"
+	"github.com/ngoctb13/forya-be/internal/domains/inputs"
 	"github.com/ngoctb13/forya-be/pkg/csv"
 )
 
@@ -28,7 +28,7 @@ func (h *Handler) CreateStudent() gin.HandlerFunc {
 			return
 		}
 
-		err = h.student.CreateStudent(c, &dm.CreateStudentInput{
+		err = h.student.CreateStudent(c, &inputs.CreateStudentInput{
 			FullName:          req.FullName,
 			Age:               req.Age,
 			PhoneNumber:       req.PhoneNumber,
@@ -99,10 +99,10 @@ func (h *Handler) ImportStudentsCSVFile() gin.HandlerFunc {
 			return
 		}
 
-		var inputArr []*dm.CreateStudentInput
+		var inputArr []*inputs.CreateStudentInput
 
 		for _, req := range reqArr {
-			input := &dm.CreateStudentInput{
+			input := &inputs.CreateStudentInput{
 				FullName:          req.FullName,
 				Age:               req.Age,
 				PhoneNumber:       req.PhoneNumber,
@@ -158,7 +158,7 @@ func (h *Handler) ListClassStudents() gin.HandlerFunc {
 			queryOpts.leftAt = &t
 		}
 
-		studentArr, err := h.student.ListClassStudents(c, &dm.ListClassStudentsInput{
+		studentArr, err := h.student.ListClassStudents(c, &inputs.ListClassStudentsInput{
 			ClassID:  classID,
 			JoinedAt: queryOpts.joinedAt,
 			LeftAt:   queryOpts.leftAt,
@@ -193,7 +193,7 @@ func (h *Handler) UpdateStudent() gin.HandlerFunc {
 			return
 		}
 
-		s, err := h.student.UpdateStudent(c, &dm.UpdateStudentInput{
+		s, err := h.student.UpdateStudent(c, &inputs.UpdateStudentInput{
 			StudentID: studentId,
 			Fields:    req.Fields,
 		})
@@ -216,7 +216,7 @@ func (h *Handler) SearchStudents() gin.HandlerFunc {
 			return
 		}
 
-		students, err := h.student.ListStudents(c, &dm.ListStudentsInput{
+		students, err := h.student.ListStudents(c, &inputs.ListStudentsInput{
 			FullName:          req.FullName,
 			AgeMin:            req.AgeMin,
 			AgeMax:            req.AgeMax,

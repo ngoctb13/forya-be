@@ -6,7 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/ngoctb13/forya-be/handler/models"
-	dm "github.com/ngoctb13/forya-be/internal/domain/models"
+	"github.com/ngoctb13/forya-be/internal/domains/inputs"
 )
 
 func (h *Handler) CreateCourse() gin.HandlerFunc {
@@ -25,7 +25,7 @@ func (h *Handler) CreateCourse() gin.HandlerFunc {
 			return
 		}
 
-		err = h.course.CreateCourse(c, &dm.CreateCourseInput{
+		err = h.course.CreateCourse(c, &inputs.CreateCourseInput{
 			Name:            req.Name,
 			Description:     req.Description,
 			SessionCount:    req.SessionCount,
@@ -62,7 +62,7 @@ func (h *Handler) EnrollCourse() gin.HandlerFunc {
 			return
 		}
 
-		err = h.courseStudent.CreateCourseStudents(c, &dm.CreateCourseStudentsInput{
+		err = h.courseStudent.CreateCourseStudents(c, &inputs.CreateCourseStudentsInput{
 			CourseID:   req.CourseID,
 			StudentIDs: req.StudentIDs,
 		})
@@ -97,7 +97,7 @@ func (h *Handler) UpdateCourse() gin.HandlerFunc {
 			return
 		}
 
-		course, err := h.course.UpdateCourse(c, &dm.UpdateCourseInput{
+		course, err := h.course.UpdateCourse(c, &inputs.UpdateCourseInput{
 			CourseID: courseId,
 			Fields:   req.Fields,
 		})
@@ -108,5 +108,33 @@ func (h *Handler) UpdateCourse() gin.HandlerFunc {
 			return
 		}
 		c.JSON(http.StatusOK, course)
+	}
+}
+
+func (h *Handler) SearchCourses() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		req := &models.SearchCoursesRequest{}
+		if err := c.ShouldBindQuery(req); err != nil {
+			log.Printf("parse request error: %v", err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		courses, err := h.course.ListCourses(c, &inputs.ListCoursesInput{
+			Name:         req.Name,
+			Description:  req.Description,
+			SessionCount: req.SessionCount,
+			PriceMax:     req.PriceMax,
+			PriceMin:     req.PriceMin,
+			OrderBy:      req.OrderBy,
+		})
+
+		if err != nil {
+			log.Printf("ListCoursesUsecase fail with error: %v", err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, courses)
 	}
 }

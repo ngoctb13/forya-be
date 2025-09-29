@@ -22,25 +22,7 @@ type ClassEnrollments struct {
 	LeftAt   *time.Time `json:"left_at"`
 }
 
-type ListClassStudentsInput struct {
-	ClassID  string
-	JoinedAt *time.Time
-	LeftAt   *time.Time
-}
-type CreateStudentInput struct {
-	FullName          string
-	Age               int
-	PhoneNumber       string
-	ParentPhoneNumber string
-	Note              string
-}
-
-type UpdateStudentInput struct {
-	StudentID string
-	Fields    map[string]interface{}
-}
-
-type ListStudentsInput struct {
+type ListFilter struct {
 	FullName          *string
 	AgeMin            *int
 	AgeMax            *int

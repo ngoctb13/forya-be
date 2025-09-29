@@ -18,8 +18,3 @@ type QueryOptions struct {
 	JoinedAt *time.Time
 	LeftAt   *time.Time
 }
-
-type EnrollClassInput struct {
-	ClassID    string
-	StudentIDs []string
-}

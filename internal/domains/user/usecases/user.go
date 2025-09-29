@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/ngoctb13/forya-be/internal/domain/models"
+	"github.com/ngoctb13/forya-be/internal/domains/inputs"
 	"github.com/ngoctb13/forya-be/internal/domains/user/repos"
 )
 
@@ -23,7 +24,7 @@ func NewUser(userRepo repos.IUserRepo) *User {
 	}
 }
 
-func (u *User) CreateUser(ctx context.Context, input *models.CreateUserInput) error {
+func (u *User) CreateUser(ctx context.Context, input *inputs.CreateUserInput) error {
 	existingUser, err := u.userRepo.GetUserByUsername(ctx, input.UserName)
 	if err == nil && existingUser != nil {
 		return ErrUsernameAlreadyExists

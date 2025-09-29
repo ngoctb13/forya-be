@@ -1,7 +1,6 @@
-package models
+package inputs
 
-type User struct {
-	ID       string `json:"id" gorm:"default:uuid_generate_v4()"`
+type CreateUserInput struct {
 	Email    string `json:"email"`
 	UserName string `json:"user_name"`
 	Password string `json:"password"`

@@ -6,6 +6,7 @@ import (
 
 	"github.com/ngoctb13/forya-be/internal/domain/models"
 	"github.com/ngoctb13/forya-be/internal/domains/course/repos"
+	"github.com/ngoctb13/forya-be/internal/domains/inputs"
 )
 
 type Course struct {
@@ -18,7 +19,7 @@ func NewCourse(courseRepo repos.ICourseRepo) *Course {
 	}
 }
 
-func (c *Course) CreateCourse(ctx context.Context, input *models.CreateCourseInput) error {
+func (c *Course) CreateCourse(ctx context.Context, input *inputs.CreateCourseInput) error {
 	course := &models.Course{
 		Name:            input.Name,
 		Description:     input.Description,
@@ -30,7 +31,7 @@ func (c *Course) CreateCourse(ctx context.Context, input *models.CreateCourseInp
 	return c.courseRepo.Create(ctx, course)
 }
 
-func (c *Course) UpdateCourse(ctx context.Context, input *models.UpdateCourseInput) (*models.Course, error) {
+func (c *Course) UpdateCourse(ctx context.Context, input *inputs.UpdateCourseInput) (*models.Course, error) {
 	course, err := c.courseRepo.GetByID(ctx, input.CourseID)
 	if err != nil {
 		return nil, err
@@ -39,4 +40,15 @@ func (c *Course) UpdateCourse(ctx context.Context, input *models.UpdateCourseInp
 		return nil, errors.New("course not found")
 	}
 	return c.courseRepo.UpdateWithMap(ctx, input.CourseID, input.Fields)
+}
+
+func (c *Course) ListCourses(ctx context.Context, input *inputs.ListCoursesInput) ([]*models.Course, error) {
+	return c.courseRepo.GetAll(ctx, &models.GetAllFilter{
+		Name:         input.Name,
+		Description:  input.Description,
+		SessionCount: input.SessionCount,
+		PriceMax:     input.PriceMax,
+		PriceMin:     input.PriceMin,
+		OrderBy:      input.OrderBy,
+	})
 }

@@ -6,6 +6,7 @@ import (
 
 	"github.com/ngoctb13/forya-be/internal/domain/models"
 	"github.com/ngoctb13/forya-be/internal/domains/class/repos"
+	"github.com/ngoctb13/forya-be/internal/domains/inputs"
 )
 
 type Class struct {
@@ -18,7 +19,7 @@ func NewClass(classRepo repos.IClassRepo) *Class {
 	}
 }
 
-func (c *Class) CreateClass(ctx context.Context, input *models.CreateClassInput) error {
+func (c *Class) CreateClass(ctx context.Context, input *inputs.CreateClassInput) error {
 	class := &models.Class{
 		Name:        input.Name,
 		Description: input.Description,
