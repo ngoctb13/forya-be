@@ -5,13 +5,13 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/ngoctb13/forya-be/handler/models"
+	"github.com/ngoctb13/forya-be/handler/models/request"
 	"github.com/ngoctb13/forya-be/internal/domains/inputs"
 )
 
 func (h *Handler) CreateCourse() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		req := &models.CreateCourseRequest{}
+		req := &request.CreateCourseRequest{}
 		if err := c.ShouldBind(req); err != nil {
 			log.Printf("parse request error: %v", err)
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -44,7 +44,7 @@ func (h *Handler) CreateCourse() gin.HandlerFunc {
 
 func (h *Handler) EnrollCourse() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		req := &models.EnrollCourseRequest{}
+		req := &request.EnrollCourseRequest{}
 		if err := c.ShouldBind(req); err != nil {
 			log.Printf("parse request error: %v", err)
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -85,7 +85,7 @@ func (h *Handler) UpdateCourse() gin.HandlerFunc {
 			return
 		}
 
-		req := &models.UpdateCourseRequest{}
+		req := &request.UpdateCourseRequest{}
 		if err := c.ShouldBind(req); err != nil {
 			log.Printf("parse request error: %v", err)
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -113,7 +113,7 @@ func (h *Handler) UpdateCourse() gin.HandlerFunc {
 
 func (h *Handler) SearchCourses() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		req := &models.SearchCoursesRequest{}
+		req := &request.SearchCoursesRequest{}
 		if err := c.ShouldBindQuery(req); err != nil {
 			log.Printf("parse request error: %v", err)
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

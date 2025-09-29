@@ -1,4 +1,4 @@
-package models
+package request
 
 import "errors"
 
@@ -11,7 +11,6 @@ func (r *CreateClassRequest) Validate() error {
 	if r.Name == "" {
 		return errors.New("name is required")
 	}
-
 	return nil
 }
 

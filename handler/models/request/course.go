@@ -1,8 +1,6 @@
-package models
+package request
 
-import (
-	"errors"
-)
+import "errors"
 
 type CreateCourseRequest struct {
 	Name            string `json:"name"`

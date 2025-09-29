@@ -5,14 +5,14 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/ngoctb13/forya-be/handler/models"
+	"github.com/ngoctb13/forya-be/handler/models/request"
 	"github.com/ngoctb13/forya-be/internal/domains/inputs"
 	"github.com/ngoctb13/forya-be/utils"
 )
 
 func (h *Handler) Login() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		req := &models.LoginRequest{}
+		req := &request.LoginRequest{}
 		if err := c.ShouldBind(req); err != nil {
 			log.Printf("parse request with error: %v", err)
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -60,7 +60,7 @@ func (h *Handler) Login() gin.HandlerFunc {
 
 func (h *Handler) Register() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		req := &models.CreateUserRequest{}
+		req := &request.CreateUserRequest{}
 		if err := c.ShouldBind(req); err != nil {
 			log.Printf("parse request error: %v", err)
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

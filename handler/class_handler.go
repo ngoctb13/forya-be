@@ -5,13 +5,13 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/ngoctb13/forya-be/handler/models"
+	"github.com/ngoctb13/forya-be/handler/models/request"
 	"github.com/ngoctb13/forya-be/internal/domains/inputs"
 )
 
 func (h *Handler) CreateClass() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		req := &models.CreateClassRequest{}
+		req := &request.CreateClassRequest{}
 		if err := c.ShouldBind(req); err != nil {
 			log.Printf("parse request error: %v", err)
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -63,7 +63,7 @@ func (h *Handler) SearchClassByName() gin.HandlerFunc {
 
 func (h *Handler) EnrollClass() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		req := &models.EnrollClassRequest{}
+		req := &request.EnrollClassRequest{}
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return

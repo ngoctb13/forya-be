@@ -7,14 +7,14 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/ngoctb13/forya-be/handler/models"
+	"github.com/ngoctb13/forya-be/handler/models/request"
 	"github.com/ngoctb13/forya-be/internal/domains/inputs"
 	"github.com/ngoctb13/forya-be/pkg/csv"
 )
 
 func (h *Handler) CreateStudent() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		req := &models.CreateStudentRequest{}
+		req := &request.CreateStudentRequest{}
 		if err := c.ShouldBind(req); err != nil {
 			log.Printf("parse request error: %v", err)
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -61,14 +61,14 @@ func (h *Handler) ImportStudentsCSVFile() gin.HandlerFunc {
 		}
 		defer f.Close()
 
-		var reqArr []*models.CreateStudentRequest
+		var reqArr []*request.CreateStudentRequest
 		errMses, total, err := csv.ReadCSV(f, 5, true, func(record []string, line int) error {
 			age, innerErr := strconv.Atoi(record[1])
 			if innerErr != nil {
 				return innerErr
 			}
 
-			req := &models.CreateStudentRequest{
+			req := &request.CreateStudentRequest{
 				FullName:          record[0],
 				Age:               age,
 				PhoneNumber:       record[2],
@@ -181,7 +181,7 @@ func (h *Handler) UpdateStudent() gin.HandlerFunc {
 			return
 		}
 
-		req := &models.UpdateStudentRequest{}
+		req := &request.UpdateStudentRequest{}
 		if err := c.ShouldBind(req); err != nil {
 			log.Printf("parse request error: %v", err)
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -209,7 +209,7 @@ func (h *Handler) UpdateStudent() gin.HandlerFunc {
 
 func (h *Handler) SearchStudents() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		req := &models.SearchStudentsRequest{}
+		req := &request.SearchStudentsRequest{}
 		if err := c.ShouldBindQuery(req); err != nil {
 			log.Printf("parse request error: %v", err)
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

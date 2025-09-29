@@ -1,4 +1,4 @@
-package models
+package request
 
 import (
 	"errors"
@@ -8,16 +8,6 @@ import (
 )
 
 var phoneRegex = regexp.MustCompile(`^[0-9]{9,15}$`)
-
-type Student struct {
-	ID                string `json:"id"`
-	FullName          string `json:"full_name"`
-	Age               int    `json:"age"`
-	PhoneNumber       string `json:"phone_number"`
-	ParentPhoneNumber string `json:"parent_phone_number"`
-	Note              string `json:"note"`
-	IsActive          bool   `json:"is_active"`
-}
 
 type CreateStudentRequest struct {
 	FullName          string `json:"full_name"`
