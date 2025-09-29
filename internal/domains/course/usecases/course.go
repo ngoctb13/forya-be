@@ -7,6 +7,7 @@ import (
 	"github.com/ngoctb13/forya-be/internal/domain/models"
 	"github.com/ngoctb13/forya-be/internal/domains/course/repos"
 	"github.com/ngoctb13/forya-be/internal/domains/inputs"
+	"github.com/shopspring/decimal"
 )
 
 type Course struct {
@@ -24,7 +25,7 @@ func (c *Course) CreateCourse(ctx context.Context, input *inputs.CreateCourseInp
 		Name:            input.Name,
 		Description:     input.Description,
 		SessionCount:    input.SessionCount,
-		PricePerSession: input.PricePerSession,
+		PricePerSession: decimal.NewFromFloat(input.PricePerSession),
 		IsActive:        true,
 	}
 

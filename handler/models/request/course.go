@@ -3,10 +3,10 @@ package request
 import "errors"
 
 type CreateCourseRequest struct {
-	Name            string `json:"name"`
-	Description     string `json:"description"`
-	SessionCount    int    `json:"session_count"`
-	PricePerSession int    `json:"price_per_session"`
+	Name            string  `json:"name"`
+	Description     string  `json:"description"`
+	SessionCount    int     `json:"session_count"`
+	PricePerSession float64 `json:"price_per_session"`
 }
 
 func (r *CreateCourseRequest) Validate() error {
@@ -75,7 +75,7 @@ func (r *UpdateCourseRequest) Validate() error {
 				return errors.New("invalid session_count: must be a positive number")
 			}
 		case "price_per_session":
-			pps, ok := v.(int)
+			pps, ok := v.(float64)
 			if !ok || pps < 0 {
 				return errors.New("invalid age: must be a positive number")
 			}
@@ -86,10 +86,10 @@ func (r *UpdateCourseRequest) Validate() error {
 }
 
 type SearchCoursesRequest struct {
-	Name         *string `form:"name"`
-	Description  *string `form:"description"`
-	SessionCount *int    `form:"session_count"`
-	PriceMin     *int    `form:"price_per_session"`
-	PriceMax     *int    `form:"price_per_session"`
-	OrderBy      *string `form:"order_by"`
+	Name         *string  `form:"name"`
+	Description  *string  `form:"description"`
+	SessionCount *int     `form:"session_count"`
+	PriceMin     *float64 `form:"price_per_session"`
+	PriceMax     *float64 `form:"price_per_session"`
+	OrderBy      *string  `form:"order_by"`
 }

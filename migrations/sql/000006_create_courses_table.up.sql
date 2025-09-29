@@ -5,7 +5,7 @@ CREATE TABLE courses (
     name VARCHAR(255) NOT NULL,
     description TEXT,
     session_count INT NOT NULL,
-    price_per_session BIGINT NOT NULL,
+    price_per_session NUMERIC(12,2) NOT NULL,
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()

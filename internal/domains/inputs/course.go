@@ -4,8 +4,8 @@ type ListCoursesInput struct {
 	Name         *string
 	Description  *string
 	SessionCount *int
-	PriceMax     *int
-	PriceMin     *int
+	PriceMax     *float64
+	PriceMin     *float64
 	OrderBy      *string
 }
 
@@ -13,7 +13,7 @@ type CreateCourseInput struct {
 	Name            string
 	Description     string
 	SessionCount    int
-	PricePerSession int
+	PricePerSession float64
 }
 
 type UpdateCourseInput struct {
