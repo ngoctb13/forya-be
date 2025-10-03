@@ -13,6 +13,7 @@ import (
 	courseStudentUC "github.com/ngoctb13/forya-be/internal/domains/course_student/usecases"
 	authUC "github.com/ngoctb13/forya-be/internal/domains/refresh_token/usecases"
 	studentUC "github.com/ngoctb13/forya-be/internal/domains/student/usecases"
+	supplyUC "github.com/ngoctb13/forya-be/internal/domains/supply/usecases"
 	userUC "github.com/ngoctb13/forya-be/internal/domains/user/usecases"
 )
 
@@ -25,6 +26,7 @@ type Domains struct {
 	CourseStudent *courseStudentUC.CourseStudent
 	Auth          *authUC.Auth
 	ClassSession  *classSessionUC.ClassSession
+	Supply        *supplyUC.Supply
 }
 
 func (s *Server) InitCORS() {
@@ -51,6 +53,7 @@ func (s *Server) InitDomains(repos repos.IRepo, t txn.ITxn) *Domains {
 	courseStudent := courseStudentUC.NewCourseStudent(repos.CourseStudent(), repos.Courses())
 	auth := authUC.NewAuth(repos.RefreshToken())
 	classSession := classSessionUC.NewClassSession(repos.ClassSession())
+	supply := supplyUC.NewSupply(repos.Supply())
 	return &Domains{
 		User:          user,
 		Class:         class,
@@ -60,11 +63,12 @@ func (s *Server) InitDomains(repos repos.IRepo, t txn.ITxn) *Domains {
 		CourseStudent: courseStudent,
 		Auth:          auth,
 		ClassSession:  classSession,
+		Supply:        supply,
 	}
 }
 
 func (s *Server) InitRouter(domains *Domains) {
-	hdl := handler.NewHandler(domains.User, domains.Class, domains.Student, domains.ClassStudent, domains.Course, domains.CourseStudent, domains.Auth, domains.ClassSession)
+	hdl := handler.NewHandler(domains.User, domains.Class, domains.Student, domains.ClassStudent, domains.Course, domains.CourseStudent, domains.Auth, domains.ClassSession, domains.Supply)
 
 	authRouter := s.router.Group("api/auth")
 	hdl.ConfigRouteAuth(authRouter)

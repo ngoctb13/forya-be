@@ -10,6 +10,7 @@ import (
 	courseStudentUC "github.com/ngoctb13/forya-be/internal/domains/course_student/usecases"
 	authUC "github.com/ngoctb13/forya-be/internal/domains/refresh_token/usecases"
 	studentUC "github.com/ngoctb13/forya-be/internal/domains/student/usecases"
+	supplyUC "github.com/ngoctb13/forya-be/internal/domains/supply/usecases"
 	userUC "github.com/ngoctb13/forya-be/internal/domains/user/usecases"
 )
 
@@ -22,6 +23,7 @@ type Handler struct {
 	courseStudent *courseStudentUC.CourseStudent
 	auth          *authUC.Auth
 	classSession  *classSessionUC.ClassSession
+	supply        *supplyUC.Supply
 }
 
 func NewHandler(user *userUC.User,
@@ -31,7 +33,8 @@ func NewHandler(user *userUC.User,
 	course *courseUC.Course,
 	courseStudent *courseStudentUC.CourseStudent,
 	auth *authUC.Auth,
-	classSession *classSessionUC.ClassSession) *Handler {
+	classSession *classSessionUC.ClassSession,
+	supply *supplyUC.Supply) *Handler {
 	return &Handler{
 		user:          user,
 		class:         class,
@@ -41,6 +44,7 @@ func NewHandler(user *userUC.User,
 		courseStudent: courseStudent,
 		auth:          auth,
 		classSession:  classSession,
+		supply:        supply,
 	}
 }
 
