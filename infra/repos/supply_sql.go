@@ -16,17 +16,24 @@ func NewSupplySQLRepo(db *gorm.DB) *supplySQLRepo {
 }
 
 func (r *supplySQLRepo) Create(ctx context.Context, supply *models.Supply) error {
-	return nil
+	return r.db.WithContext(ctx).Create(supply).Error
 }
 
 func (r *supplySQLRepo) ListByName(ctx context.Context, keyword string) ([]*models.Supply, error) {
-	return nil, nil
+	var supplies []*models.Supply
+	err := r.db.WithContext(ctx).
+		Where("unaccent(lower(name)) ILIKE unaccent(lower(?))", "%"+keyword+"%").
+		Find(&supplies).Error
+	return supplies, err
 }
 
 func (r *supplySQLRepo) Delete(ctx context.Context, id string) error {
-	return nil
+	return r.db.WithContext(ctx).
+		Model(&models.Supply{}).
+		Where("id = ?", id).
+		Update("is_active", false).Error
 }
 
 func (r *supplySQLRepo) UpdateWithFields(ctx context.Context, supply *models.Supply, fields map[string]interface{}) error {
-	return nil
+	return r.db.WithContext(ctx).Model(supply).Updates(fields).Error
 }
