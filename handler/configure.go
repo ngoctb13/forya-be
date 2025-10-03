@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/ngoctb13/forya-be/handler/middlewares"
 	classUC "github.com/ngoctb13/forya-be/internal/domains/class/usecases"
+	classSessionUC "github.com/ngoctb13/forya-be/internal/domains/class_session/usecases"
 	classStudentUC "github.com/ngoctb13/forya-be/internal/domains/class_student/usecases"
 	courseUC "github.com/ngoctb13/forya-be/internal/domains/course/usecases"
 	courseStudentUC "github.com/ngoctb13/forya-be/internal/domains/course_student/usecases"
@@ -20,6 +21,7 @@ type Handler struct {
 	course        *courseUC.Course
 	courseStudent *courseStudentUC.CourseStudent
 	auth          *authUC.Auth
+	classSession  *classSessionUC.ClassSession
 }
 
 func NewHandler(user *userUC.User,
@@ -28,7 +30,8 @@ func NewHandler(user *userUC.User,
 	classStudent *classStudentUC.ClassStudent,
 	course *courseUC.Course,
 	courseStudent *courseStudentUC.CourseStudent,
-	auth *authUC.Auth) *Handler {
+	auth *authUC.Auth,
+	classSession *classSessionUC.ClassSession) *Handler {
 	return &Handler{
 		user:          user,
 		class:         class,
@@ -37,6 +40,7 @@ func NewHandler(user *userUC.User,
 		course:        course,
 		courseStudent: courseStudent,
 		auth:          auth,
+		classSession:  classSession,
 	}
 }
 
@@ -62,6 +66,9 @@ func (h *Handler) ConfigRouteAPI(router *gin.RouterGroup) {
 	router.PATCH("/course/:courseId/update", middlewares.AdminOnly(), h.UpdateCourse())
 	router.POST("/course/:courseId/enroll", middlewares.AdminOnly(), h.EnrollCourse())
 	router.GET("/course/search", middlewares.AdminOnly(), h.SearchCourses())
+
+	// class session
+	router.POST("/session/create", middlewares.AdminOnly(), h.CreateClassSession())
 }
 
 func (h *Handler) ConfigRouteAuth(router *gin.RouterGroup) {

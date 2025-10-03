@@ -5,6 +5,7 @@ import (
 
 	"github.com/ngoctb13/forya-be/config"
 	classRp "github.com/ngoctb13/forya-be/internal/domains/class/repos"
+	classSessionRp "github.com/ngoctb13/forya-be/internal/domains/class_session/repos"
 	classStudentRp "github.com/ngoctb13/forya-be/internal/domains/class_student/repos"
 	courseRp "github.com/ngoctb13/forya-be/internal/domains/course/repos"
 	courseStudentRp "github.com/ngoctb13/forya-be/internal/domains/course_student/repos"
@@ -51,4 +52,8 @@ func (r *Repo) CourseStudent() courseStudentRp.ICourseStudentRepo {
 
 func (r *Repo) RefreshToken() refreshTokenRp.IRefreshTokenRepo {
 	return NewRefreshTokenSQLRepo(r.db)
+}
+
+func (r *Repo) ClassSession() classSessionRp.IClassSession {
+	return NewClassSessionSQLRepo(r.db)
 }

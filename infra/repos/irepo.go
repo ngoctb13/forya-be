@@ -2,6 +2,7 @@ package repos
 
 import (
 	classRp "github.com/ngoctb13/forya-be/internal/domains/class/repos"
+	classSessionRp "github.com/ngoctb13/forya-be/internal/domains/class_session/repos"
 	classStudentRp "github.com/ngoctb13/forya-be/internal/domains/class_student/repos"
 	courseRp "github.com/ngoctb13/forya-be/internal/domains/course/repos"
 	courseStudentRp "github.com/ngoctb13/forya-be/internal/domains/course_student/repos"
@@ -18,4 +19,5 @@ type IRepo interface {
 	Courses() courseRp.ICourseRepo
 	CourseStudent() courseStudentRp.ICourseStudentRepo
 	RefreshToken() refreshTokenRp.IRefreshTokenRepo
+	ClassSession() classSessionRp.IClassSession
 }
