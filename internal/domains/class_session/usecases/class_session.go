@@ -20,6 +20,7 @@ func NewClassSession(classSessionRepo repos.IClassSession) *ClassSession {
 
 func (cl *ClassSession) CreateClassSession(ctx context.Context, input *inputs.CreateClassSessionInput) error {
 	session := &models.ClassSession{
+		Name:    input.Name,
 		ClassID: input.ClassID,
 		HeldAt:  input.HeldAt,
 	}

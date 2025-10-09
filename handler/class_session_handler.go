@@ -30,6 +30,7 @@ func (h *Handler) CreateClassSession() gin.HandlerFunc {
 		}
 
 		err = h.classSession.CreateClassSession(c, &inputs.CreateClassSessionInput{
+			Name:    req.Name,
 			ClassID: req.ClassID,
 			HeldAt:  ha,
 		})
