@@ -27,19 +27,16 @@ func (c *classSQLRepo) GetClassByID(ctx context.Context, id string) (*models.Cla
 	return &class, err
 }
 
-func (c *classSQLRepo) GetClassContainName(ctx context.Context, name *string) ([]*models.Class, error) {
+func (c *classSQLRepo) GetClassContainName(ctx context.Context, name *string, page, limit int) ([]*models.Class, *models.Pagination, error) {
 	var classes []*models.Class
-	query := c.db.WithContext(ctx).Debug().Model(&models.Class{})
+	query := c.db.WithContext(ctx).Model(&models.Class{})
 
 	if name != nil {
 		like := "%" + *name + "%"
 		query = query.Where("unaccent(lower(name)) ILIKE unaccent(lower(?))", like)
 	}
 
-	err := query.Find(&classes).Error
-	if err != nil {
-		return nil, err
-	}
+	pagination, err := Paginate(query, page, limit, &classes)
 
-	return classes, err
+	return classes, pagination, err
 }

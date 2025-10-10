@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/ngoctb13/forya-be/handler/models/request"
+	"github.com/ngoctb13/forya-be/handler/models/response"
 	"github.com/ngoctb13/forya-be/internal/domains/inputs"
 )
 
@@ -42,22 +43,27 @@ func (h *Handler) CreateClass() gin.HandlerFunc {
 
 func (h *Handler) SearchClassByName() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var nameInput *string
-		nameParam := c.Query("name")
-		if nameParam != "" {
-			nameInput = &nameParam
+		req := request.SearchClassRequest{}
+		if err := c.ShouldBindQuery(&req); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid query parameters"})
+			return
 		}
 
-		classes, err := h.class.SearchClassByName(c, nameInput)
+		_ = req.Validate()
+
+		classes, pagination, err := h.class.SearchClassByName(c, &inputs.SearchClassByNameInput{
+			Name:  req.Name,
+			Page:  req.Page,
+			Limit: req.Limit,
+		})
+		
 		if err != nil {
 			log.Printf("SearchClassByName fail with error: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
 
-		c.JSON(http.StatusOK, gin.H{
-			"data": classes,
-		})
+		c.JSON(http.StatusOK, response.ToSearchClassResponse(classes, pagination))
 	}
 }
 

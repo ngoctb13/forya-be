@@ -31,6 +31,6 @@ func (c *Class) CreateClass(ctx context.Context, input *inputs.CreateClassInput)
 	return c.classRepo.CreateClass(ctx, class)
 }
 
-func (c *Class) SearchClassByName(ctx context.Context, name *string) ([]*models.Class, error) {
-	return c.classRepo.GetClassContainName(ctx, name)
+func (c *Class) SearchClassByName(ctx context.Context, input *inputs.SearchClassByNameInput) ([]*models.Class, *models.Pagination, error) {
+	return c.classRepo.GetClassContainName(ctx, input.Name, input.Page, input.Limit)
 }
