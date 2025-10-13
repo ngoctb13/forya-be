@@ -19,6 +19,14 @@ func (r *supplySQLRepo) Create(ctx context.Context, supply *models.Supply) error
 	return r.db.WithContext(ctx).Create(supply).Error
 }
 
+func (r *supplySQLRepo) GetByID(ctx context.Context, id string) (*models.Supply, error) {
+	var supply models.Supply
+	if err := r.db.WithContext(ctx).First(&supply, "id = ?", id).Error; err != nil {
+		return nil, err
+	}
+	return &supply, nil
+}
+
 func (r *supplySQLRepo) ListByName(ctx context.Context, keyword string) ([]*models.Supply, error) {
 	var supplies []*models.Supply
 	err := r.db.WithContext(ctx).

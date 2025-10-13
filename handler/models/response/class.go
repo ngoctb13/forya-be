@@ -32,7 +32,7 @@ func ToSearchClassResponse(inArr []*models.Class, inPagination *models.Paginatio
 		Pagination: Pagination{
 			Page:      inPagination.Page,
 			Limit:     inPagination.Limit,
-			Total:     inPagination.Total,
+			Total:     int(inPagination.Total),
 			TotalPage: inPagination.TotalPage,
 		},
 	}

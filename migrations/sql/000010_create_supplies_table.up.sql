@@ -4,6 +4,7 @@ CREATE TABLE supplies (
     description TEXT,
     unit VARCHAR(50) NOT NULL,                   -- đơn vị tính: cái, hộp, tờ,...
     min_threshold INT,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
