@@ -13,5 +13,5 @@ type IStudentRepo interface {
 	GetStudentByID(ctx context.Context, id string) (*models.Student, error)
 	GetStudentsByClassID(ctx context.Context, classID string, queryOpts models.QueryOptions) ([]*models.ClassEnrollments, error)
 	UpdateWithMap(ctx context.Context, studentID string, fields map[string]interface{}) (*models.Student, error)
-	List(ctx context.Context, filters *models.ListFilter) ([]*models.Student, error)
+	List(ctx context.Context, queries map[string]interface{}, pagination *models.Pagination) ([]*models.Student, *models.Pagination, error)
 }

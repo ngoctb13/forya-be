@@ -81,10 +81,12 @@ func (r *UpdateStudentRequest) Validate() error {
 	return nil
 }
 
-type SearchStudentsRequest struct {
+type ListStudentsRequest struct {
 	FullName          *string `form:"full_name"`
 	AgeMin            *int    `form:"age_min"`
 	AgeMax            *int    `form:"age_max"`
 	PhoneNumber       *string `form:"phone_number"`
 	ParentPhoneNumber *string `form:"parent_phone_number"`
+	Page              int     `json:"page"`
+	Limit             int     `json:"limit"`
 }

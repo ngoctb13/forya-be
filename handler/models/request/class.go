@@ -31,20 +31,8 @@ func (r *EnrollClassRequest) Validate() error {
 	return nil
 }
 
-type SearchClassRequest struct {
+type ListClassRequest struct {
 	Name  *string `form:"name"`
 	Page  int     `form:"page"`
 	Limit int     `form:"limit"`
-}
-
-func (r *SearchClassRequest) Validate() error {
-	if r.Page <= 0 {
-		r.Page = 1
-	}
-
-	if r.Limit <= 0 {
-		r.Limit = 10
-	}
-
-	return nil
 }

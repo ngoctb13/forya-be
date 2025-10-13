@@ -26,4 +26,6 @@ type ListStudentsInput struct {
 	AgeMax            *int
 	PhoneNumber       *string
 	ParentPhoneNumber *string
+	Page              int
+	Limit             int
 }

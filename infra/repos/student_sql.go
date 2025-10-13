@@ -108,29 +108,44 @@ func (s *studentSQLRepo) UpdateWithMap(ctx context.Context, studentID string, fi
 	return student, nil
 }
 
-func (s *studentSQLRepo) List(ctx context.Context, filters *models.ListFilter) ([]*models.Student, error) {
+func (s *studentSQLRepo) List(ctx context.Context, queries map[string]interface{}, pagination *models.Pagination) ([]*models.Student, *models.Pagination, error) {
 	query := s.db.WithContext(ctx).Model(&models.Student{})
 
-	if filters.FullName != nil {
-		query = query.Where("unaccent(lower(name)) ILIKE unaccent(lower(?))", "%"+*filters.FullName+"%")
-	}
-	if filters.AgeMin != nil {
-		query = query.Where("age >= ?", *filters.AgeMin)
-	}
-	if filters.AgeMax != nil {
-		query = query.Where("age <= ?", *filters.AgeMax)
-	}
-	if filters.PhoneNumber != nil {
-		query = query.Where("phone_number ILIKE ?", "%"+*filters.PhoneNumber+"%")
-	}
-	if filters.ParentPhoneNumber != nil {
-		query = query.Where("parent_phone_number ILIKE ?", "%"+*filters.ParentPhoneNumber+"%")
+	for k, v := range queries {
+		switch k {
+		case "name":
+			if name, ok := v.(string); ok {
+				query = query.Where("unaccent(lower(name)) ILIKE unaccent(lower(?))", "%"+name+"%")
+			}
+		case "age_min":
+			query = query.Where("age >= ?", v)
+		case "age_max":
+			query = query.Where("age <= ?", v)
+		case "phone_number":
+			if pn, ok := v.(string); ok {
+				query = query.Where("phone_number ILIKE ?", "%"+pn+"%")
+			}
+		case "parent_phone_number":
+			if ppn, ok := v.(string); ok {
+				query = query.Where("parent_phone_number ILIKE ?", "%"+ppn+"%")
+			}
+		}
 	}
 
-	var students []*models.Student
+	var (
+		total    int64
+		students []*models.Student
+	)
+
+	if err := query.Count(&total).Error; err != nil {
+		return nil, nil, err
+	}
+	pagination.SetTotal(total)
+	query = pagination.ApplyToQuery(query)
+
 	if err := query.Find(&students).Error; err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	return students, nil
+	return students, pagination, nil
 }

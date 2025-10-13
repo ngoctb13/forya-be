@@ -54,14 +54,14 @@ func (h *Handler) ConfigRouteAPI(router *gin.RouterGroup) {
 
 	// class
 	router.POST("/class/create", middlewares.AdminOnly(), h.CreateClass())
-	router.GET("/class/search", h.SearchClassByName())
+	router.GET("/class/list", middlewares.AdminOnly(), h.ListClassByName())
 	router.POST("/class/:classId/students", middlewares.AdminOnly(), h.EnrollClass())
 	router.DELETE("/class/:classId/student/:studentId", middlewares.AdminOnly(), h.DeleteStudentFromClass())
 
 	// student
 	router.POST("/student/create", middlewares.AdminOnly(), h.CreateStudent())
 	router.PATCH("/student/:studentId/update", middlewares.AdminOnly(), h.UpdateStudent())
-	router.GET("/student/search", middlewares.AdminOnly(), h.SearchStudents())
+	router.GET("/student/list", middlewares.AdminOnly(), h.ListStudents())
 	router.POST("student/import", middlewares.AdminOnly(), h.ImportStudentsCSVFile())
 	router.GET("/student/list/:classId", middlewares.AdminOnly(), h.ListClassStudents())
 

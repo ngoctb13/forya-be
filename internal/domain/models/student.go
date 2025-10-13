@@ -21,11 +21,3 @@ type ClassEnrollments struct {
 	JoinedAt time.Time  `json:"joined_at"`
 	LeftAt   *time.Time `json:"left_at"`
 }
-
-type ListFilter struct {
-	FullName          *string
-	AgeMin            *int
-	AgeMax            *int
-	PhoneNumber       *string
-	ParentPhoneNumber *string
-}

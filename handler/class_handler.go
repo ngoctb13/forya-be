@@ -41,24 +41,22 @@ func (h *Handler) CreateClass() gin.HandlerFunc {
 	}
 }
 
-func (h *Handler) SearchClassByName() gin.HandlerFunc {
+func (h *Handler) ListClassByName() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		req := request.SearchClassRequest{}
-		if err := c.ShouldBindQuery(&req); err != nil {
+		req := &request.ListClassRequest{}
+		if err := c.ShouldBindQuery(req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid query parameters"})
 			return
 		}
 
-		_ = req.Validate()
-
-		classes, pagination, err := h.class.SearchClassByName(c, &inputs.SearchClassByNameInput{
+		classes, pagination, err := h.class.ListClassByName(c, &inputs.SearchClassByNameInput{
 			Name:  req.Name,
 			Page:  req.Page,
 			Limit: req.Limit,
 		})
-		
+
 		if err != nil {
-			log.Printf("SearchClassByName fail with error: %v", err)
+			log.Printf("ListClassByNameUsecase fail with error: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
@@ -106,11 +104,13 @@ func (h *Handler) DeleteStudentFromClass() gin.HandlerFunc {
 		studentID := c.Param("studentId")
 
 		if classID == "" || studentID == "" {
+			log.Printf("classId and studentId are required")
 			c.JSON(http.StatusBadRequest, gin.H{"error": "classId and studentId are required"})
 			return
 		}
 
-		if err := h.classStudent.DeleteStudentFromClass(c.Request.Context(), classID, studentID); err != nil {
+		if err := h.classStudent.DeleteStudentFromClass(c, classID, studentID); err != nil {
+			log.Printf("DeleteStudentFromClassUsecase fail with error: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}

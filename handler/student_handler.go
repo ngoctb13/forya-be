@@ -8,6 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/ngoctb13/forya-be/handler/models/request"
+	"github.com/ngoctb13/forya-be/handler/models/response"
 	"github.com/ngoctb13/forya-be/internal/domains/inputs"
 	"github.com/ngoctb13/forya-be/pkg/csv"
 )
@@ -207,21 +208,23 @@ func (h *Handler) UpdateStudent() gin.HandlerFunc {
 	}
 }
 
-func (h *Handler) SearchStudents() gin.HandlerFunc {
+func (h *Handler) ListStudents() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		req := &request.SearchStudentsRequest{}
+		req := &request.ListStudentsRequest{}
 		if err := c.ShouldBindQuery(req); err != nil {
 			log.Printf("parse request error: %v", err)
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 
-		students, err := h.student.ListStudents(c, &inputs.ListStudentsInput{
+		students, pagination, err := h.student.ListStudents(c, &inputs.ListStudentsInput{
 			FullName:          req.FullName,
 			AgeMin:            req.AgeMin,
 			AgeMax:            req.AgeMax,
 			PhoneNumber:       req.PhoneNumber,
 			ParentPhoneNumber: req.ParentPhoneNumber,
+			Page:              req.Page,
+			Limit:             req.Limit,
 		})
 		if err != nil {
 			log.Printf("ListStudentsUsecase fail with error: %v", err)
@@ -229,6 +232,6 @@ func (h *Handler) SearchStudents() gin.HandlerFunc {
 			return
 		}
 
-		c.JSON(http.StatusOK, students)
+		c.JSON(http.StatusOK, response.ToListStudentsResponse(students, pagination))
 	}
 }

@@ -72,12 +72,25 @@ func (s *Student) UpdateStudent(ctx context.Context, input *inputs.UpdateStudent
 	return s.studentRepo.UpdateWithMap(ctx, input.StudentID, input.Fields)
 }
 
-func (s *Student) ListStudents(ctx context.Context, input *inputs.ListStudentsInput) ([]*models.Student, error) {
-	return s.studentRepo.List(ctx, &models.ListFilter{
-		FullName:          input.FullName,
-		AgeMin:            input.AgeMin,
-		AgeMax:            input.AgeMax,
-		PhoneNumber:       input.PhoneNumber,
-		ParentPhoneNumber: input.ParentPhoneNumber,
-	})
+func (s *Student) ListStudents(ctx context.Context, input *inputs.ListStudentsInput) ([]*models.Student, *models.Pagination, error) {
+	queries := make(map[string]interface{})
+	if input.FullName != nil {
+		queries["name"] = *input.FullName
+	}
+	if input.AgeMin != nil {
+		queries["age_min"] = *input.AgeMin
+	}
+	if input.AgeMax != nil {
+		queries["age_max"] = *input.AgeMax
+	}
+	if input.PhoneNumber != nil {
+		queries["phone_number"] = *input.PhoneNumber
+	}
+	if input.ParentPhoneNumber != nil {
+		queries["parent_phone_number"] = *input.ParentPhoneNumber
+	}
+
+	pagination := models.NewPagination(input.Page, input.Limit)
+
+	return s.studentRepo.List(ctx, queries, pagination)
 }
