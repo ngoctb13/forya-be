@@ -7,4 +7,5 @@ type ClassSession struct {
 	Name    string
 	ClassID string
 	HeldAt  time.Time
+	Class   *Class
 }

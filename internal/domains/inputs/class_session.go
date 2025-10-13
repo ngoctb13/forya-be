@@ -7,3 +7,11 @@ type CreateClassSessionInput struct {
 	ClassID string
 	HeldAt  time.Time
 }
+
+type ListClassSessionsInput struct {
+	ClassID   *string
+	StartTime *time.Time
+	EndTime   *time.Time
+	Page      int
+	Limit     int
+}

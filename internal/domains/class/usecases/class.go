@@ -32,5 +32,6 @@ func (c *Class) CreateClass(ctx context.Context, input *inputs.CreateClassInput)
 }
 
 func (c *Class) SearchClassByName(ctx context.Context, input *inputs.SearchClassByNameInput) ([]*models.Class, *models.Pagination, error) {
-	return c.classRepo.GetClassContainName(ctx, input.Name, input.Page, input.Limit)
+	pagination := models.NewPagination(input.Page, input.Limit)
+	return c.classRepo.GetClassContainName(ctx, input.Name, pagination)
 }

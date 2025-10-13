@@ -9,5 +9,5 @@ import (
 type IClassRepo interface {
 	CreateClass(ctx context.Context, class *models.Class) error
 	GetClassByID(ctx context.Context, id string) (*models.Class, error)
-	GetClassContainName(ctx context.Context, name *string, page, limit int) ([]*models.Class, *models.Pagination, error)
+	GetClassContainName(ctx context.Context, name *string, pagination *models.Pagination) ([]*models.Class, *models.Pagination, error)
 }

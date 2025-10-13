@@ -8,4 +8,5 @@ import (
 
 type IClassSession interface {
 	Create(ctx context.Context, session *models.ClassSession) error
+	List(ctx context.Context, queries map[string]interface{}, pagination *models.Pagination) ([]*models.ClassSession, *models.Pagination, error)
 }

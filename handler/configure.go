@@ -73,6 +73,7 @@ func (h *Handler) ConfigRouteAPI(router *gin.RouterGroup) {
 
 	// class session
 	router.POST("/session/create", middlewares.AdminOnly(), h.CreateClassSession())
+	router.GET("/session/list", middlewares.AdminOnly(), h.ListClassSessions())
 }
 
 func (h *Handler) ConfigRouteAuth(router *gin.RouterGroup) {
