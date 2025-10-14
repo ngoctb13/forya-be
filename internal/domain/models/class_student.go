@@ -13,8 +13,3 @@ type ClassStudent struct {
 func (ClassStudent) TableName() string {
 	return "class_student"
 }
-
-type QueryOptions struct {
-	JoinedAt *time.Time
-	LeftAt   *time.Time
-}

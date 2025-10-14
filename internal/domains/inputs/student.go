@@ -6,6 +6,8 @@ type ListClassStudentsInput struct {
 	ClassID  string
 	JoinedAt *time.Time
 	LeftAt   *time.Time
+	Page     int
+	Limit    int
 }
 type CreateStudentInput struct {
 	FullName          string

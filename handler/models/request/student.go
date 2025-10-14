@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+	"time"
+
+	"github.com/ngoctb13/forya-be/internal/domains/inputs"
 )
 
 var phoneRegex = regexp.MustCompile(`^[0-9]{9,15}$`)
@@ -89,4 +92,37 @@ type ListStudentsRequest struct {
 	ParentPhoneNumber *string `form:"parent_phone_number"`
 	Page              int     `json:"page"`
 	Limit             int     `json:"limit"`
+}
+
+type ListClassStudentsRequest struct {
+	JoinedAtAfter *string `form:"joined_at_after"`
+	LeftAtAfter   *string `form:"left_at_after"`
+	Page          int     `form:"page"`
+	Limit         int     `form:"limit"`
+}
+
+func (r *ListClassStudentsRequest) ValidateAndMap() (*inputs.ListClassStudentsInput, error) {
+	var input inputs.ListClassStudentsInput
+	if r.JoinedAtAfter != nil {
+		t, err := time.Parse(time.RFC3339, *r.JoinedAtAfter)
+		if err != nil {
+			return nil, err
+		}
+
+		input.JoinedAt = &t
+	}
+
+	if r.LeftAtAfter != nil {
+		t, err := time.Parse(time.RFC3339, *r.LeftAtAfter)
+		if err != nil {
+			return nil, err
+		}
+
+		input.LeftAt = &t
+	}
+
+	input.Page = r.Page
+	input.Limit = r.Limit
+
+	return &input, nil
 }

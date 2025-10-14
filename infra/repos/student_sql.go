@@ -53,29 +53,37 @@ func (s *studentSQLRepo) GetStudentByID(ctx context.Context, id string) (*models
 	return &student, nil
 }
 
-func (s *studentSQLRepo) GetStudentsByClassID(ctx context.Context, classID string, queryOpts models.QueryOptions) ([]*models.ClassEnrollments, error) {
+func (s *studentSQLRepo) GetStudentsByClassID(ctx context.Context, classID string, queries map[string]interface{}, pagination *models.Pagination) ([]*models.ClassEnrollments, *models.Pagination, error) {
 	var results []struct {
 		models.Student
 		JoinedAt time.Time  `gorm:"column:joined_at"`
 		LeftAt   *time.Time `gorm:"column:left_at"`
 	}
 
-	q := s.db.WithContext(ctx).
+	query := s.db.WithContext(ctx).
 		Table("students").
 		Select("students.*, cs.joined_at, cs.left_at").
 		Joins("JOIN class_student cs ON cs.student_id = students.id").
 		Where("cs.class_id = ?", classID)
 
-	if queryOpts.JoinedAt != nil {
-		q = q.Where("cs.joined_at >= ?", queryOpts.JoinedAt)
+	for k, v := range queries {
+		switch k {
+		case "joined_at":
+			query = query.Where("joined_at >= ?", v)
+		case "left_at":
+			query = query.Where("left_at >= ?", v)
+		}
 	}
 
-	if queryOpts.LeftAt != nil {
-		q = q.Where("cs.left_at >= ?", queryOpts.LeftAt)
+	var total int64
+	if err := query.Count(&total).Error; err != nil {
+		return nil, nil, err
 	}
+	pagination.SetTotal(total)
+	query = pagination.ApplyToQuery(query)
 
-	if err := q.Find(&results).Error; err != nil {
-		return nil, err
+	if err := query.Find(&results).Error; err != nil {
+		return nil, nil, err
 	}
 
 	var enriched []*models.ClassEnrollments
@@ -87,7 +95,7 @@ func (s *studentSQLRepo) GetStudentsByClassID(ctx context.Context, classID strin
 		})
 	}
 
-	return enriched, nil
+	return enriched, pagination, nil
 }
 
 func (s *studentSQLRepo) UpdateWithMap(ctx context.Context, studentID string, fields map[string]interface{}) (*models.Student, error) {

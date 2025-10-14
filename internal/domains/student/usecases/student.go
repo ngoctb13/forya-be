@@ -51,13 +51,18 @@ func (s *Student) CreateStudents(ctx context.Context, inputs []*inputs.CreateStu
 	return s.studentRepo.BatchCreate(ctx, studentArr)
 }
 
-func (s *Student) ListClassStudents(ctx context.Context, input *inputs.ListClassStudentsInput) ([]*models.ClassEnrollments, error) {
-	opts := models.QueryOptions{
-		JoinedAt: input.JoinedAt,
-		LeftAt:   input.LeftAt,
+func (s *Student) ListClassStudents(ctx context.Context, input *inputs.ListClassStudentsInput) ([]*models.ClassEnrollments, *models.Pagination, error) {
+	queries := make(map[string]interface{})
+	if input.JoinedAt != nil {
+		queries["joined_at"] = input.JoinedAt
+	}
+	if input.LeftAt != nil {
+		queries["left_at"] = input.LeftAt
 	}
 
-	return s.studentRepo.GetStudentsByClassID(ctx, input.ClassID, opts)
+	pagination := models.NewPagination(input.Page, input.Limit)
+
+	return s.studentRepo.GetStudentsByClassID(ctx, input.ClassID, queries, pagination)
 }
 
 func (s *Student) UpdateStudent(ctx context.Context, input *inputs.UpdateStudentInput) (*models.Student, error) {
