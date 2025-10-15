@@ -11,3 +11,10 @@ type UpdateSupplyInput struct {
 	ID     string
 	Fields map[string]interface{}
 }
+
+type ListSuppliesInput struct {
+	Name         *string
+	MinThreshold *int
+	Page         int
+	Limit        int
+}

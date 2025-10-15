@@ -69,11 +69,15 @@ func (h *Handler) ConfigRouteAPI(router *gin.RouterGroup) {
 	router.POST("/course/create", middlewares.AdminOnly(), h.CreateCourse())
 	router.PATCH("/course/:courseId/update", middlewares.AdminOnly(), h.UpdateCourse())
 	router.POST("/course/:courseId/enroll", middlewares.AdminOnly(), h.EnrollCourse())
-	router.GET("/course/search", middlewares.AdminOnly(), h.SearchCourses())
+	router.GET("/course/list", middlewares.AdminOnly(), h.ListCourses())
 
 	// class session
 	router.POST("/session/create", middlewares.AdminOnly(), h.CreateClassSession())
 	router.GET("/session/list", middlewares.AdminOnly(), h.ListClassSessions())
+
+	// supply
+	router.POST("/supply/create", middlewares.AdminOnly(), h.CreateSupply())
+	router.GET("/supply/list", middlewares.AdminOnly(), h.ListSupplies())
 }
 
 func (h *Handler) ConfigRouteAuth(router *gin.RouterGroup) {

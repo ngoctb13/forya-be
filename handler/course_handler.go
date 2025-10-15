@@ -112,9 +112,9 @@ func (h *Handler) UpdateCourse() gin.HandlerFunc {
 	}
 }
 
-func (h *Handler) SearchCourses() gin.HandlerFunc {
+func (h *Handler) ListCourses() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		req := &request.SearchCoursesRequest{}
+		req := &request.ListCoursesRequest{}
 		if err := c.ShouldBindQuery(req); err != nil {
 			log.Printf("parse request error: %v", err)
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -127,6 +127,8 @@ func (h *Handler) SearchCourses() gin.HandlerFunc {
 			PriceMax:     req.PriceMax,
 			PriceMin:     req.PriceMin,
 			OrderBy:      req.OrderBy,
+			Page:         req.Page,
+			Limit:        req.Limit,
 		})
 
 		if err != nil {

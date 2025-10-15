@@ -27,12 +27,30 @@ func (r *supplySQLRepo) GetByID(ctx context.Context, id string) (*models.Supply,
 	return &supply, nil
 }
 
-func (r *supplySQLRepo) ListByName(ctx context.Context, keyword string) ([]*models.Supply, error) {
+func (r *supplySQLRepo) List(ctx context.Context, queries map[string]interface{}, pagination *models.Pagination) ([]*models.Supply, *models.Pagination, error) {
 	var supplies []*models.Supply
-	err := r.db.WithContext(ctx).
-		Where("unaccent(lower(name)) ILIKE unaccent(lower(?))", "%"+keyword+"%").
-		Find(&supplies).Error
-	return supplies, err
+	query := r.db.WithContext(ctx).Model(&models.Supply{})
+
+	for k, v := range queries {
+		switch k {
+		case "name":
+			query = query.Where("unaccent(lower(name)) ILIKE unaccent(lower(?))", "%"+v.(string)+"%")
+		case "min_threshold":
+			query = query.Where("min_threshold >= ?", v)
+		}
+	}
+
+	var total int64
+	if err := query.Count(&total).Error; err != nil {
+		return nil, nil, err
+	}
+	pagination.SetTotal(total)
+	query = pagination.ApplyToQuery(query)
+
+	if err := query.Find(&supplies).Error; err != nil {
+		return nil, nil, err
+	}
+	return supplies, pagination, nil
 }
 
 func (r *supplySQLRepo) Delete(ctx context.Context, id string) error {

@@ -85,10 +85,12 @@ func (r *UpdateCourseRequest) Validate() error {
 	return nil
 }
 
-type SearchCoursesRequest struct {
+type ListCoursesRequest struct {
 	Name         *string  `form:"name"`
 	SessionCount *int     `form:"session_count"`
 	PriceMin     *float64 `form:"price_per_session"`
 	PriceMax     *float64 `form:"price_per_session"`
 	OrderBy      *string  `form:"order_by"`
+	Page         int      `form:"page"`
+	Limit        int      `form:"limit"`
 }

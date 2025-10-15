@@ -43,17 +43,19 @@ func (s *Supply) UpdateSupply(ctx context.Context, input *inputs.UpdateSupplyInp
 	return s.supplyRepo.UpdateWithFields(ctx, es, input.Fields)
 }
 
-func (s *Supply) GetSuppliesByName(ctx context.Context, input string) ([]*outputs.GetSuppliesByNameOutput, error) {
-	supArr, err := s.supplyRepo.ListByName(ctx, input)
-	if err != nil {
-		return nil, err
+func (s *Supply) ListSupplies(ctx context.Context, input *inputs.ListSuppliesInput) (*outputs.ListSuppliesOutput, *models.Pagination, error) {
+	pagination := models.NewPagination(input.Page, input.Limit)
+	queries := make(map[string]interface{})
+	if input.Name != nil {
+		queries["name"] = input.Name
+	}
+	if input.MinThreshold != nil {
+		queries["min_threshold"] = input.MinThreshold
 	}
 
-	if len(supArr) == 0 {
-		return nil, errors.New("do no have any supply")
-	}
+	supArr, p, err := s.supplyRepo.List(ctx, queries, pagination)
 
-	return outputs.ToGetSuppliesByNameOutput(supArr), nil
+	return outputs.ToListSuppliesOutput(supArr), p, err
 }
 
 func (s *Supply) DeleteSupply(ctx context.Context, id string) error {

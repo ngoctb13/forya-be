@@ -2,25 +2,33 @@ package outputs
 
 import "github.com/ngoctb13/forya-be/internal/domain/models"
 
-type GetSuppliesByNameOutput struct {
+type Supply struct {
 	ID           string
 	Name         string
 	Description  string
 	Unit         string
 	MinThreshold int
+	IsActive     bool
+}
+type ListSuppliesOutput struct {
+	Supplies []Supply
 }
 
-func ToGetSuppliesByNameOutput(in []*models.Supply) []*GetSuppliesByNameOutput {
-	var outs []*GetSuppliesByNameOutput
-	for _, s := range in {
-		outs = append(outs, &GetSuppliesByNameOutput{
-			ID:           s.ID,
-			Name:         s.Name,
-			Description:  s.Description,
-			Unit:         s.Unit,
-			MinThreshold: s.MinThreshold,
-		})
+func ToListSuppliesOutput(in []*models.Supply) *ListSuppliesOutput {
+	var supplyArr []Supply
+	for _, v := range in {
+		item := Supply{
+			ID:           v.ID,
+			Name:         v.Name,
+			Description:  v.Description,
+			Unit:         v.Unit,
+			MinThreshold: v.MinThreshold,
+			IsActive:     v.IsActive,
+		}
+		supplyArr = append(supplyArr, item)
 	}
 
-	return outs
+	return &ListSuppliesOutput{
+		Supplies: supplyArr,
+	}
 }
