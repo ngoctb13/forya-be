@@ -27,49 +27,48 @@ func (r *courseSQLRepo) GetByID(ctx context.Context, id string) (*models.Course,
 	return &course, nil
 }
 
-func (r *courseSQLRepo) GetAll(ctx context.Context, filter *models.GetAllFilter) ([]*models.Course, error) {
+func (r *courseSQLRepo) List(ctx context.Context, fields map[string]interface{}, pagination *models.Pagination) ([]*models.Course, *models.Pagination, error) {
 	var courses []*models.Course
-	q := r.db.WithContext(ctx).Model(&models.Course{})
+	query := r.db.WithContext(ctx).Model(&models.Course{})
 
-	if filter.Name != nil {
-		q = q.Where("unaccent(lower(name)) ILIKE unaccent(lower(?))", "%"+*filter.Name+"%")
-	}
-
-	if filter.Description != nil {
-		q = q.Where("unaccent(lower(description)) ILIKE unaccent(lower(?))", "%"+*filter.Description+"%")
-	}
-
-	if filter.SessionCount != nil {
-		q = q.Where("session_count = ?", *filter.SessionCount)
-	}
-
-	if filter.PriceMin != nil {
-		q = q.Where("price_per_session >= ?", *filter.PriceMin)
-	}
-
-	if filter.PriceMax != nil {
-		q = q.Where("price_per_session <= ?", *filter.PriceMax)
-	}
-
-	if filter.OrderBy != nil {
-		switch *filter.OrderBy {
-		case "price_asc":
-			q = q.Order("price_per_session ASC")
-		case "price_desc":
-			q = q.Order("price_per_session DESC")
-		case "session_count_asc":
-			q = q.Order("session_count ASC")
-		case "session_count_desc":
-			q = q.Order("session_count DESC")
+	for k, v := range fields {
+		switch k {
+		case "name":
+			if name, ok := v.(string); ok {
+				query = query.Where("unaccent(lower(name)) ILIKE unaccent(lower(?))", "%"+name+"%")
+			}
+		case "session_count":
+			query = query.Where("session_count = ?", v)
+		case "price_min":
+			query = query.Where("price_min >= ?", v)
+		case "price_max":
+			query = query.Where("price_max <= ?", v)
+		case "order_by":
+			switch v {
+			case "price_asc":
+				query = query.Order("price_per_session ASC")
+			case "price_desc":
+				query = query.Order("price_per_session DESC")
+			case "session_count_asc":
+				query = query.Order("session_count ASC")
+			case "session_count_desc":
+				query = query.Order("session_count DESC")
+			}
 		}
 	}
 
-	err := q.Find(&courses).Error
-	return courses, err
-}
+	var total int64
+	if err := query.Count(&total).Error; err != nil {
+		return nil, nil, err
+	}
+	pagination.SetTotal(total)
+	query = pagination.ApplyToQuery(query)
 
-func (r *courseSQLRepo) Update(ctx context.Context, c *models.Course) error {
-	return r.db.WithContext(ctx).Save(c).Error
+	if err := query.Find(&courses).Error; err != nil {
+		return nil, nil, err
+	}
+
+	return courses, pagination, nil
 }
 
 func (r *courseSQLRepo) Delete(ctx context.Context, id string) error {
@@ -77,14 +76,6 @@ func (r *courseSQLRepo) Delete(ctx context.Context, id string) error {
 		Model(&models.Course{}).
 		Where("id = ?", id).
 		Update("is_active", false).Error
-}
-
-func (r *courseSQLRepo) SearchByName(ctx context.Context, keyword string) ([]*models.Course, error) {
-	var courses []*models.Course
-	err := r.db.WithContext(ctx).
-		Where("unaccent(lower(name)) ILIKE unaccent(lower(?))", "%"+keyword+"%").
-		Find(&courses).Error
-	return courses, err
 }
 
 func (r *courseSQLRepo) UpdateWithMap(ctx context.Context, id string, fields map[string]interface{}) (*models.Course, error) {

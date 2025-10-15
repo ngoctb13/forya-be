@@ -87,7 +87,6 @@ func (r *UpdateCourseRequest) Validate() error {
 
 type SearchCoursesRequest struct {
 	Name         *string  `form:"name"`
-	Description  *string  `form:"description"`
 	SessionCount *int     `form:"session_count"`
 	PriceMin     *float64 `form:"price_per_session"`
 	PriceMax     *float64 `form:"price_per_session"`

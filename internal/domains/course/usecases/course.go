@@ -7,6 +7,7 @@ import (
 	"github.com/ngoctb13/forya-be/internal/domain/models"
 	"github.com/ngoctb13/forya-be/internal/domains/course/repos"
 	"github.com/ngoctb13/forya-be/internal/domains/inputs"
+	"github.com/ngoctb13/forya-be/internal/domains/outputs"
 	"github.com/shopspring/decimal"
 )
 
@@ -43,13 +44,26 @@ func (c *Course) UpdateCourse(ctx context.Context, input *inputs.UpdateCourseInp
 	return c.courseRepo.UpdateWithMap(ctx, input.CourseID, input.Fields)
 }
 
-func (c *Course) ListCourses(ctx context.Context, input *inputs.ListCoursesInput) ([]*models.Course, error) {
-	return c.courseRepo.GetAll(ctx, &models.GetAllFilter{
-		Name:         input.Name,
-		Description:  input.Description,
-		SessionCount: input.SessionCount,
-		PriceMax:     input.PriceMax,
-		PriceMin:     input.PriceMin,
-		OrderBy:      input.OrderBy,
-	})
+func (c *Course) ListCourses(ctx context.Context, input *inputs.ListCoursesInput) (*outputs.ListCoursesOutput, *models.Pagination, error) {
+	pagination := models.NewPagination(input.Page, input.Limit)
+	queries := make(map[string]interface{})
+	if input.Name != nil {
+		queries["name"] = input.Name
+	}
+	if input.SessionCount != nil {
+		queries["session_count"] = input.SessionCount
+	}
+	if input.PriceMin != nil {
+		queries["price_min"] = input.PriceMin
+	}
+	if input.PriceMax != nil {
+		queries["price_max"] = input.PriceMax
+	}
+	if input.OrderBy != nil {
+		queries["order_by"] = input.OrderBy
+	}
+
+	courseArr, p, err := c.courseRepo.List(ctx, queries, pagination)
+
+	return outputs.ToListCoursesOutput(courseArr), p, err
 }

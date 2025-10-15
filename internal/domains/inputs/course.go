@@ -2,11 +2,12 @@ package inputs
 
 type ListCoursesInput struct {
 	Name         *string
-	Description  *string
 	SessionCount *int
 	PriceMax     *float64
 	PriceMin     *float64
 	OrderBy      *string
+	Page         int
+	Limit        int
 }
 
 type CreateCourseInput struct {

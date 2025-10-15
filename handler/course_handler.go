@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/ngoctb13/forya-be/handler/models/request"
+	"github.com/ngoctb13/forya-be/handler/models/response"
 	"github.com/ngoctb13/forya-be/internal/domains/inputs"
 )
 
@@ -120,9 +121,8 @@ func (h *Handler) SearchCourses() gin.HandlerFunc {
 			return
 		}
 
-		courses, err := h.course.ListCourses(c, &inputs.ListCoursesInput{
+		out, pagination, err := h.course.ListCourses(c, &inputs.ListCoursesInput{
 			Name:         req.Name,
-			Description:  req.Description,
 			SessionCount: req.SessionCount,
 			PriceMax:     req.PriceMax,
 			PriceMin:     req.PriceMin,
@@ -135,6 +135,6 @@ func (h *Handler) SearchCourses() gin.HandlerFunc {
 			return
 		}
 
-		c.JSON(http.StatusOK, courses)
+		c.JSON(http.StatusOK, response.ToListCoursesResponse(out, pagination))
 	}
 }
