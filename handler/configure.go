@@ -78,6 +78,8 @@ func (h *Handler) ConfigRouteAPI(router *gin.RouterGroup) {
 	// supply
 	router.POST("/supply/create", middlewares.AdminOnly(), h.CreateSupply())
 	router.GET("/supply/list", middlewares.AdminOnly(), h.ListSupplies())
+	router.PATCH("/supply/:supplyId/update", middlewares.AdminOnly(), h.UpdateSupply())
+	router.DELETE("/supply/delete/:supplyId", middlewares.AdminOnly(), h.DeleteSupply())
 }
 
 func (h *Handler) ConfigRouteAuth(router *gin.RouterGroup) {
