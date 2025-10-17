@@ -87,7 +87,7 @@ func (h *Handler) UpdateCourse() gin.HandlerFunc {
 		}
 
 		req := &request.UpdateCourseRequest{}
-		if err := c.ShouldBind(req); err != nil {
+		if err := c.ShouldBindJSON(req); err != nil {
 			log.Printf("parse request error: %v", err)
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
@@ -98,9 +98,16 @@ func (h *Handler) UpdateCourse() gin.HandlerFunc {
 			return
 		}
 
+		fields := inputs.UpdateCourseFields{
+			Name:            req.Name,
+			Description:     req.Description,
+			SessionCount:    req.SessionCount,
+			PricePerSession: req.PricePerSession,
+		}
+
 		course, err := h.course.UpdateCourse(c, &inputs.UpdateCourseInput{
 			CourseID: courseId,
-			Fields:   req.Fields,
+			Fields:   fields,
 		})
 
 		if err != nil {
@@ -121,15 +128,14 @@ func (h *Handler) ListCourses() gin.HandlerFunc {
 			return
 		}
 
-		out, pagination, err := h.course.ListCourses(c, &inputs.ListCoursesInput{
-			Name:         req.Name,
-			SessionCount: req.SessionCount,
-			PriceMax:     req.PriceMax,
-			PriceMin:     req.PriceMin,
-			OrderBy:      req.OrderBy,
-			Page:         req.Page,
-			Limit:        req.Limit,
-		})
+		input, err := req.ValidateAndMap()
+		if err != nil {
+			log.Printf("validate request error: %v", err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		out, pagination, err := h.course.ListCourses(c, input)
 
 		if err != nil {
 			log.Printf("ListCoursesUsecase fail with error: %v", err)

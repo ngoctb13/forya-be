@@ -41,12 +41,31 @@ func (c *Course) UpdateCourse(ctx context.Context, input *inputs.UpdateCourseInp
 	if course == nil {
 		return nil, errors.New("course not found")
 	}
-	return c.courseRepo.UpdateWithMap(ctx, input.CourseID, input.Fields)
+
+	fields := map[string]interface{}{}
+	if input.Fields.Name != nil {
+		fields["name"] = *input.Fields.Name
+	}
+	if input.Fields.Description != nil {
+		fields["description"] = *input.Fields.Description
+	}
+	if input.Fields.SessionCount != nil {
+		fields["session_count"] = *input.Fields.SessionCount
+	}
+	if input.Fields.PricePerSession != nil {
+		fields["price_per_session"] = decimal.NewFromFloat(*input.Fields.PricePerSession)
+	}
+	if len(fields) == 0 {
+		return course, nil
+	}
+
+	return c.courseRepo.UpdateWithMap(ctx, input.CourseID, fields)
 }
 
 func (c *Course) ListCourses(ctx context.Context, input *inputs.ListCoursesInput) (*outputs.ListCoursesOutput, *models.Pagination, error) {
 	pagination := models.NewPagination(input.Page, input.Limit)
 	queries := make(map[string]interface{})
+
 	if input.Name != nil {
 		queries["name"] = input.Name
 	}

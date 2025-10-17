@@ -19,5 +19,12 @@ type CreateCourseInput struct {
 
 type UpdateCourseInput struct {
 	CourseID string
-	Fields   map[string]interface{}
+	Fields   UpdateCourseFields
+}
+
+type UpdateCourseFields struct {
+	Name            *string
+	Description     *string
+	SessionCount    *int
+	PricePerSession *float64
 }
