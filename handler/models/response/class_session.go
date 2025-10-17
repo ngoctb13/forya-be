@@ -26,12 +26,7 @@ func ToListClassSessionsResponse(input []*outputs.ListClassSessionsOutput, inPag
 		}
 		in.Class.ID = v.Class.ID
 		in.Class.Name = v.Class.Name
-		in.Pagination = Pagination{
-			Page:      inPagination.Page,
-			Limit:     inPagination.Limit,
-			Total:     int(inPagination.Total),
-			TotalPage: inPagination.TotalPage,
-		}
+		in.Pagination = ToPagination(inPagination)
 
 		res = append(res, in)
 	}

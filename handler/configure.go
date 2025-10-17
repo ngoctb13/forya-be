@@ -11,6 +11,7 @@ import (
 	authUC "github.com/ngoctb13/forya-be/internal/domains/refresh_token/usecases"
 	studentUC "github.com/ngoctb13/forya-be/internal/domains/student/usecases"
 	supplyUC "github.com/ngoctb13/forya-be/internal/domains/supply/usecases"
+	supplyBatchUC "github.com/ngoctb13/forya-be/internal/domains/supply_batch/usecases"
 	userUC "github.com/ngoctb13/forya-be/internal/domains/user/usecases"
 )
 
@@ -24,6 +25,7 @@ type Handler struct {
 	auth          *authUC.Auth
 	classSession  *classSessionUC.ClassSession
 	supply        *supplyUC.Supply
+	supplyBatch   *supplyBatchUC.SupplyBatch
 }
 
 func NewHandler(user *userUC.User,
@@ -34,7 +36,8 @@ func NewHandler(user *userUC.User,
 	courseStudent *courseStudentUC.CourseStudent,
 	auth *authUC.Auth,
 	classSession *classSessionUC.ClassSession,
-	supply *supplyUC.Supply) *Handler {
+	supply *supplyUC.Supply,
+	supplyBatch *supplyBatchUC.SupplyBatch) *Handler {
 	return &Handler{
 		user:          user,
 		class:         class,
@@ -45,6 +48,7 @@ func NewHandler(user *userUC.User,
 		auth:          auth,
 		classSession:  classSession,
 		supply:        supply,
+		supplyBatch:   supplyBatch,
 	}
 }
 
@@ -80,6 +84,9 @@ func (h *Handler) ConfigRouteAPI(router *gin.RouterGroup) {
 	router.GET("/supply/list", middlewares.AdminOnly(), h.ListSupplies())
 	router.PATCH("/supply/:supplyId/update", middlewares.AdminOnly(), h.UpdateSupply())
 	router.DELETE("/supply/delete/:supplyId", middlewares.AdminOnly(), h.DeleteSupply())
+
+	// supply batch
+	router.POST("/supply-batch/create", middlewares.AdminOnly(), h.CreateSupplyBatch())
 }
 
 func (h *Handler) ConfigRouteAuth(router *gin.RouterGroup) {

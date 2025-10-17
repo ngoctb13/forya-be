@@ -9,6 +9,7 @@ import (
 	refreshTokenRp "github.com/ngoctb13/forya-be/internal/domains/refresh_token/repos"
 	studentRp "github.com/ngoctb13/forya-be/internal/domains/student/repos"
 	supplyRp "github.com/ngoctb13/forya-be/internal/domains/supply/repos"
+	supplyBatchRp "github.com/ngoctb13/forya-be/internal/domains/supply_batch/repos"
 	userRp "github.com/ngoctb13/forya-be/internal/domains/user/repos"
 )
 
@@ -22,4 +23,5 @@ type IRepo interface {
 	RefreshToken() refreshTokenRp.IRefreshTokenRepo
 	ClassSession() classSessionRp.IClassSession
 	Supply() supplyRp.ISupply
+	SupplyBatch() supplyBatchRp.ISupplyBatch
 }

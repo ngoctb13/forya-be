@@ -28,12 +28,7 @@ func ToSearchClassResponse(inArr []*models.Class, inPagination *models.Paginatio
 	}
 
 	return SearchClassResponse{
-		Classes: arrClass,
-		Pagination: Pagination{
-			Page:      inPagination.Page,
-			Limit:     inPagination.Limit,
-			Total:     int(inPagination.Total),
-			TotalPage: inPagination.TotalPage,
-		},
+		Classes:    arrClass,
+		Pagination: ToPagination(inPagination),
 	}
 }

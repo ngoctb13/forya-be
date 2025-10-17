@@ -36,12 +36,7 @@ func ToListCoursesResponse(in *outputs.ListCoursesOutput, inPagination *models.P
 	}
 
 	return &ListCoursesResponse{
-		Courses: courses,
-		Pagination: Pagination{
-			Page:      inPagination.Page,
-			Limit:     inPagination.Limit,
-			Total:     int(inPagination.Total),
-			TotalPage: inPagination.TotalPage,
-		},
+		Courses:    courses,
+		Pagination: ToPagination(inPagination),
 	}
 }

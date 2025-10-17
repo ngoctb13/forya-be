@@ -46,7 +46,7 @@ func (r *classSessionSQLRepo) List(ctx context.Context, queries map[string]inter
 	pagination.SetTotal(total)
 	query = pagination.ApplyToQuery(query)
 
-	if err := query.Preload("classes").Order("held_at at DESC").Find(&csArr).Error; err != nil {
+	if err := query.Preload("classes").Order("held_at DESC").Find(&csArr).Error; err != nil {
 		return nil, nil, err
 	}
 
