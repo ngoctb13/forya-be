@@ -24,9 +24,10 @@ func (h *Handler) CreateSupplyBatch() gin.HandlerFunc {
 			return
 		}
 
-		if err := h.supplyBatch.CreateSupplyBatch(c, input); err != nil {
+		err = h.supplyBatch.CreateSupplyBatch(c, input)
+		if err != nil {
 			log.Printf("CreateSupplyBatchUsecase fail with error: %v", err)
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
 
