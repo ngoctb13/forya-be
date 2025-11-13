@@ -4,17 +4,20 @@ import (
 	"context"
 
 	"github.com/ngoctb13/forya-be/internal/domain/models"
+	classRepo "github.com/ngoctb13/forya-be/internal/domains/class/repos"
 	"github.com/ngoctb13/forya-be/internal/domains/class_session/repos"
 	"github.com/ngoctb13/forya-be/internal/domains/inputs"
 )
 
 type ClassSession struct {
 	classSessionRepo repos.IClassSession
+	classRepo        classRepo.IClassRepo
 }
 
-func NewClassSession(classSessionRepo repos.IClassSession) *ClassSession {
+func NewClassSession(classSessionRepo repos.IClassSession, classRepo classRepo.IClassRepo) *ClassSession {
 	return &ClassSession{
 		classSessionRepo: classSessionRepo,
+		classRepo:        classRepo,
 	}
 }
 
@@ -28,7 +31,6 @@ func (cl *ClassSession) CreateClassSession(ctx context.Context, input *inputs.Cr
 	return cl.classSessionRepo.Create(ctx, session)
 }
 
-// ListClassSessions returns domain models directly (removed outputs layer)
 func (cl *ClassSession) ListClassSessions(ctx context.Context, input *inputs.ListClassSessionsInput) ([]*models.ClassSession, *models.Pagination, error) {
 	queries := make(map[string]interface{})
 	if input.ClassID != nil {
@@ -44,6 +46,32 @@ func (cl *ClassSession) ListClassSessions(ctx context.Context, input *inputs.Lis
 	pagination := models.NewPagination(input.Page, input.Limit)
 
 	csArr, p, err := cl.classSessionRepo.List(ctx, queries, pagination)
+	if err != nil {
+		return nil, nil, err
+	}
 
-	return csArr, p, err
+	classIDSet := make(map[string]bool)
+	for _, cs := range csArr {
+		if cs.ClassID != "" {
+			classIDSet[cs.ClassID] = true
+		}
+	}
+
+	classIDs := make([]string, 0, len(classIDSet))
+	for id := range classIDSet {
+		classIDs = append(classIDs, id)
+	}
+
+	classMap, err := cl.classRepo.GetClassesByIDs(ctx, classIDs)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	for _, cs := range csArr {
+		if class, exists := classMap[cs.ClassID]; exists {
+			cs.Class = class
+		}
+	}
+
+	return csArr, p, nil
 }

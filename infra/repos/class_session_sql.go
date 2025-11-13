@@ -24,6 +24,7 @@ func (r *classSessionSQLRepo) Create(ctx context.Context, session *models.ClassS
 func (r *classSessionSQLRepo) List(ctx context.Context, queries map[string]interface{}, pagination *models.Pagination) ([]*models.ClassSession, *models.Pagination, error) {
 	query := r.db.WithContext(ctx).Model(&models.ClassSession{})
 
+	// Apply filters
 	for k, v := range queries {
 		switch k {
 		case "class_id":
@@ -40,13 +41,18 @@ func (r *classSessionSQLRepo) List(ctx context.Context, queries map[string]inter
 		csArr []*models.ClassSession
 	)
 
+	// Count total
 	if err := query.Count(&total).Error; err != nil {
 		return nil, nil, err
 	}
 	pagination.SetTotal(total)
-	query = pagination.ApplyToQuery(query)
 
-	if err := query.Preload("classes").Order("held_at DESC").Find(&csArr).Error; err != nil {
+	// Apply pagination and ordering
+	query = pagination.ApplyToQuery(query)
+	query = query.Order("held_at DESC")
+
+	// Fetch ClassSessions (Class will be populated in usecase via batch loading)
+	if err := query.Find(&csArr).Error; err != nil {
 		return nil, nil, err
 	}
 

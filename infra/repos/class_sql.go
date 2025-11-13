@@ -49,3 +49,24 @@ func (c *classSQLRepo) GetClassContainName(ctx context.Context, name *string, pa
 
 	return classes, pagination, nil
 }
+
+func (c *classSQLRepo) GetClassesByIDs(ctx context.Context, ids []string) (map[string]*models.Class, error) {
+	if len(ids) == 0 {
+		return make(map[string]*models.Class), nil
+	}
+
+	var classes []*models.Class
+	if err := c.db.WithContext(ctx).
+		Where("id IN ?", ids).
+		Find(&classes).Error; err != nil {
+		return nil, err
+	}
+
+	// Build map for O(1) lookup
+	classMap := make(map[string]*models.Class, len(classes))
+	for _, class := range classes {
+		classMap[class.ID] = class
+	}
+
+	return classMap, nil
+}
