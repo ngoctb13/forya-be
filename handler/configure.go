@@ -78,6 +78,7 @@ func (h *Handler) ConfigRouteAPI(router *gin.RouterGroup) {
 	// class session
 	router.POST("/session/create", middlewares.AdminOnly(), h.CreateClassSession())
 	router.GET("/session/list", middlewares.AdminOnly(), h.ListClassSessions())
+	router.POST("/session/:sessionId/attendance", middlewares.AdminOnly(), h.MarkClassSessionAttendance())
 
 	// supply
 	router.POST("/supply/create", middlewares.AdminOnly(), h.CreateSupply())

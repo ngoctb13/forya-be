@@ -15,3 +15,9 @@ type ListClassSessionsInput struct {
 	Page      int
 	Limit     int
 }
+
+type MarkClassSessionAttendanceInput struct {
+	ClassSessionID  string
+	CourseStudentID string
+	IsAttended      bool
+}

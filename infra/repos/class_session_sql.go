@@ -2,6 +2,7 @@ package repos
 
 import (
 	"context"
+	"errors"
 
 	"github.com/ngoctb13/forya-be/internal/domain/models"
 	"gorm.io/gorm"
@@ -19,6 +20,18 @@ func NewClassSessionSQLRepo(db *gorm.DB) *classSessionSQLRepo {
 
 func (r *classSessionSQLRepo) Create(ctx context.Context, session *models.ClassSession) error {
 	return r.db.WithContext(ctx).Create(session).Error
+}
+
+func (r *classSessionSQLRepo) GetByID(ctx context.Context, id string) (*models.ClassSession, error) {
+	var session models.ClassSession
+	if err := r.db.WithContext(ctx).
+		First(&session, "id = ?", id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &session, nil
 }
 
 func (r *classSessionSQLRepo) List(ctx context.Context, queries map[string]interface{}, pagination *models.Pagination) ([]*models.ClassSession, *models.Pagination, error) {

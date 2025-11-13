@@ -22,6 +22,7 @@ type IRepo interface {
 	CourseStudent() courseStudentRp.ICourseStudentRepo
 	RefreshToken() refreshTokenRp.IRefreshTokenRepo
 	ClassSession() classSessionRp.IClassSession
+	ClassSessionAttendance() classSessionRp.IClassSessionAttendance
 	Supply() supplyRp.ISupply
 	SupplyBatch() supplyBatchRp.ISupplyBatch
 }

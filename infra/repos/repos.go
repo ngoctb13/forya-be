@@ -60,6 +60,10 @@ func (r *Repo) ClassSession() classSessionRp.IClassSession {
 	return NewClassSessionSQLRepo(r.db)
 }
 
+func (r *Repo) ClassSessionAttendance() classSessionRp.IClassSessionAttendance {
+	return NewClassSessionAttendanceSQLRepo(r.db)
+}
+
 func (r *Repo) Supply() supplyRp.ISupply {
 	return NewSupplySQLRepo(r.db)
 }

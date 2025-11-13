@@ -41,3 +41,19 @@ func ToListClassSessionsResponse(sessions []*models.ClassSession, pagination *mo
 		Pagination: ToPagination(pagination),
 	}
 }
+
+type ClassSessionAttendance struct {
+	ID              string `json:"id"`
+	ClassSessionID  string `json:"class_session_id"`
+	CourseStudentID string `json:"course_student_id"`
+	IsAttended      bool   `json:"is_attended"`
+}
+
+func ToClassSessionAttendance(attendance *models.ClassSessionAttendance) ClassSessionAttendance {
+	return ClassSessionAttendance{
+		ID:              attendance.ID,
+		ClassSessionID:  attendance.ClassSessionID,
+		CourseStudentID: attendance.CourseStudentID,
+		IsAttended:      attendance.IsAttended,
+	}
+}
