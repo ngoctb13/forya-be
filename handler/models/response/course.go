@@ -2,7 +2,6 @@ package response
 
 import (
 	"github.com/ngoctb13/forya-be/internal/domain/models"
-	"github.com/ngoctb13/forya-be/internal/domains/outputs"
 	"github.com/shopspring/decimal"
 )
 
@@ -20,10 +19,11 @@ type ListCoursesResponse struct {
 	Pagination
 }
 
-func ToListCoursesResponse(in *outputs.ListCoursesOutput, inPagination *models.Pagination) *ListCoursesResponse {
-	var courses []Course
+// ToListCoursesResponse maps domain models directly to response (removed outputs layer)
+func ToListCoursesResponse(courses []*models.Course, pagination *models.Pagination) *ListCoursesResponse {
+	var responseCourses []Course
 
-	for _, v := range in.Courses {
+	for _, v := range courses {
 		item := Course{
 			ID:              v.ID,
 			Name:            v.Name,
@@ -32,11 +32,11 @@ func ToListCoursesResponse(in *outputs.ListCoursesOutput, inPagination *models.P
 			PricePerSession: v.PricePerSession,
 			IsActive:        v.IsActive,
 		}
-		courses = append(courses, item)
+		responseCourses = append(responseCourses, item)
 	}
 
 	return &ListCoursesResponse{
-		Courses:    courses,
-		Pagination: ToPagination(inPagination),
+		Courses:    responseCourses,
+		Pagination: ToPagination(pagination),
 	}
 }

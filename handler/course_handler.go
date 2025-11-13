@@ -135,7 +135,7 @@ func (h *Handler) ListCourses() gin.HandlerFunc {
 			return
 		}
 
-		out, pagination, err := h.course.ListCourses(c, input)
+		courses, pagination, err := h.course.ListCourses(c, input)
 
 		if err != nil {
 			log.Printf("ListCoursesUsecase fail with error: %v", err)
@@ -143,6 +143,6 @@ func (h *Handler) ListCourses() gin.HandlerFunc {
 			return
 		}
 
-		c.JSON(http.StatusOK, response.ToListCoursesResponse(out, pagination))
+		c.JSON(http.StatusOK, response.ToListCoursesResponse(courses, pagination))
 	}
 }

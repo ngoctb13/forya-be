@@ -6,7 +6,6 @@ import (
 
 	"github.com/ngoctb13/forya-be/internal/domain/models"
 	"github.com/ngoctb13/forya-be/internal/domains/inputs"
-	"github.com/ngoctb13/forya-be/internal/domains/outputs"
 	"github.com/ngoctb13/forya-be/internal/domains/supply/repos"
 )
 
@@ -43,7 +42,8 @@ func (s *Supply) UpdateSupply(ctx context.Context, input *inputs.UpdateSupplyInp
 	return s.supplyRepo.UpdateWithFields(ctx, es, input.Fields)
 }
 
-func (s *Supply) ListSupplies(ctx context.Context, input *inputs.ListSuppliesInput) (*outputs.ListSuppliesOutput, *models.Pagination, error) {
+// ListSupplies returns domain models directly (removed outputs layer)
+func (s *Supply) ListSupplies(ctx context.Context, input *inputs.ListSuppliesInput) ([]*models.Supply, *models.Pagination, error) {
 	pagination := models.NewPagination(input.Page, input.Limit)
 	queries := make(map[string]interface{})
 	if input.Name != nil {
@@ -55,7 +55,7 @@ func (s *Supply) ListSupplies(ctx context.Context, input *inputs.ListSuppliesInp
 
 	supArr, p, err := s.supplyRepo.List(ctx, queries, pagination)
 
-	return outputs.ToListSuppliesOutput(supArr), p, err
+	return supArr, p, err
 }
 
 func (s *Supply) DeleteSupply(ctx context.Context, id string) error {

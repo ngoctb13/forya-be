@@ -2,7 +2,6 @@ package response
 
 import (
 	"github.com/ngoctb13/forya-be/internal/domain/models"
-	"github.com/ngoctb13/forya-be/internal/domains/outputs"
 )
 
 type Supply struct {
@@ -14,31 +13,29 @@ type Supply struct {
 	IsActive     bool   `json:"is_active"`
 }
 
-func ToSupply(in outputs.Supply) Supply {
-	return Supply{
-		ID:           in.ID,
-		Name:         in.Name,
-		Description:  in.Description,
-		Unit:         in.Unit,
-		MinThreshold: in.MinThreshold,
-		IsActive:     in.IsActive,
-	}
-}
-
 type ListSuppliesResponse struct {
 	Supplies []Supply `json:"supplies"`
 	Pagination
 }
 
-func ToListSuppliesResponse(in *outputs.ListSuppliesOutput, inPagination *models.Pagination) *ListSuppliesResponse {
-	var supArr []Supply
-	for _, v := range in.Supplies {
-		item := ToSupply(v)
-		supArr = append(supArr, item)
+// ToListSuppliesResponse maps domain models directly to response (removed outputs layer)
+func ToListSuppliesResponse(supplies []*models.Supply, pagination *models.Pagination) *ListSuppliesResponse {
+	var responseSupplies []Supply
+
+	for _, v := range supplies {
+		item := Supply{
+			ID:           v.ID,
+			Name:         v.Name,
+			Description:  v.Description,
+			Unit:         v.Unit,
+			MinThreshold: v.MinThreshold,
+			IsActive:     v.IsActive,
+		}
+		responseSupplies = append(responseSupplies, item)
 	}
 
 	return &ListSuppliesResponse{
-		Supplies:   supArr,
-		Pagination: ToPagination(inPagination),
+		Supplies:   responseSupplies,
+		Pagination: ToPagination(pagination),
 	}
 }

@@ -59,14 +59,14 @@ func (h *Handler) ListSupplies() gin.HandlerFunc {
 			return
 		}
 
-		out, p, err := h.supply.ListSupplies(c, input)
+		supplies, p, err := h.supply.ListSupplies(c, input)
 		if err != nil {
-			log.Printf("ListClassSessions fail with error: %v", err)
+			log.Printf("ListSupplies fail with error: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
 
-		c.JSON(http.StatusOK, response.ToListSuppliesResponse(out, p))
+		c.JSON(http.StatusOK, response.ToListSuppliesResponse(supplies, p))
 	}
 }
 

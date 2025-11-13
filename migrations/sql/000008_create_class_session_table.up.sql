@@ -1,6 +1,6 @@
 CREATE TABLE class_session (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    name VARCHAR(255) NOT NULL
+    name VARCHAR(255) NOT NULL,
     class_id UUID NOT NULL,
     held_at TIMESTAMPTZ NOT NULL,
     CONSTRAINT fk_class FOREIGN KEY (class_id) REFERENCES classes(id)
