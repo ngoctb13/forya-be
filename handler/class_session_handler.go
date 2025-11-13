@@ -79,13 +79,13 @@ func (h *Handler) ListClassSessions() gin.HandlerFunc {
 			input.EndTime = &t
 		}
 
-		out, p, err := h.classSession.ListClassSessions(c, input)
+		sessions, p, err := h.classSession.ListClassSessions(c, input)
 		if err != nil {
 			log.Printf("ListClassSessions fail with error: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
 
-		c.JSON(http.StatusOK, response.ToListClassSessionsResponse(out, p))
+		c.JSON(http.StatusOK, response.ToListClassSessionsResponse(sessions, p))
 	}
 }

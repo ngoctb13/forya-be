@@ -6,7 +6,6 @@ import (
 	"github.com/ngoctb13/forya-be/internal/domain/models"
 	"github.com/ngoctb13/forya-be/internal/domains/class_session/repos"
 	"github.com/ngoctb13/forya-be/internal/domains/inputs"
-	"github.com/ngoctb13/forya-be/internal/domains/outputs"
 )
 
 type ClassSession struct {
@@ -29,7 +28,8 @@ func (cl *ClassSession) CreateClassSession(ctx context.Context, input *inputs.Cr
 	return cl.classSessionRepo.Create(ctx, session)
 }
 
-func (cl *ClassSession) ListClassSessions(ctx context.Context, input *inputs.ListClassSessionsInput) ([]*outputs.ListClassSessionsOutput, *models.Pagination, error) {
+// ListClassSessions returns domain models directly (removed outputs layer)
+func (cl *ClassSession) ListClassSessions(ctx context.Context, input *inputs.ListClassSessionsInput) ([]*models.ClassSession, *models.Pagination, error) {
 	queries := make(map[string]interface{})
 	if input.ClassID != nil {
 		queries["class_id"] = *input.ClassID
@@ -45,5 +45,5 @@ func (cl *ClassSession) ListClassSessions(ctx context.Context, input *inputs.Lis
 
 	csArr, p, err := cl.classSessionRepo.List(ctx, queries, pagination)
 
-	return outputs.ToListClassSessionsOutput(csArr), p, err
+	return csArr, p, err
 }

@@ -2,10 +2,9 @@ package response
 
 import (
 	"github.com/ngoctb13/forya-be/internal/domain/models"
-	"github.com/ngoctb13/forya-be/internal/domains/outputs"
 )
 
-type ListClassSessionsResponse struct {
+type ClassSessionItem struct {
 	ID     string `json:"id"`
 	Name   string `json:"name"`
 	HeldAt string `json:"held_at"`
@@ -13,23 +12,32 @@ type ListClassSessionsResponse struct {
 		ID   string `json:"id"`
 		Name string `json:"name"`
 	} `json:"class"`
+}
+
+type ListClassSessionsResponse struct {
+	Sessions []ClassSessionItem `json:"sessions"`
 	Pagination
 }
 
-func ToListClassSessionsResponse(input []*outputs.ListClassSessionsOutput, inPagination *models.Pagination) []*ListClassSessionsResponse {
-	var res []*ListClassSessionsResponse
-	for _, v := range input {
-		in := &ListClassSessionsResponse{
+// ToListClassSessionsResponse maps domain models directly to response (removed outputs layer)
+func ToListClassSessionsResponse(sessions []*models.ClassSession, pagination *models.Pagination) *ListClassSessionsResponse {
+	var responseSessions []ClassSessionItem
+
+	for _, v := range sessions {
+		item := ClassSessionItem{
 			ID:     v.ID,
 			Name:   v.Name,
-			HeldAt: v.HeldAt.String(),
+			HeldAt: v.HeldAt.Format("2006-01-02T15:04:05Z07:00"),
 		}
-		in.Class.ID = v.Class.ID
-		in.Class.Name = v.Class.Name
-		in.Pagination = ToPagination(inPagination)
-
-		res = append(res, in)
+		if v.Class != nil {
+			item.Class.ID = v.Class.ID
+			item.Class.Name = v.Class.Name
+		}
+		responseSessions = append(responseSessions, item)
 	}
 
-	return res
+	return &ListClassSessionsResponse{
+		Sessions:   responseSessions,
+		Pagination: ToPagination(pagination),
+	}
 }
