@@ -9,6 +9,8 @@ import (
 type ISupplyBatch interface {
 	Create(ctx context.Context, supply *models.SupplyBatch) error
 	GetByID(ctx context.Context, id string) (*models.SupplyBatch, error)
+	GetByIDs(ctx context.Context, ids []string) (map[string]*models.SupplyBatch, error)
+	ListAvailableBySupplyIDs(ctx context.Context, supplyIDs []string) (map[string][]*models.SupplyBatch, error)
 	List(ctx context.Context, queries map[string]interface{}, pagination *models.Pagination) ([]*models.SupplyBatch, *models.Pagination, error)
 	UpdateWithFields(ctx context.Context, sb *models.SupplyBatch, fields map[string]interface{}) error
 }

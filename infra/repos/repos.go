@@ -13,6 +13,7 @@ import (
 	studentRp "github.com/ngoctb13/forya-be/internal/domains/student/repos"
 	supplyRp "github.com/ngoctb13/forya-be/internal/domains/supply/repos"
 	supplyBatchRp "github.com/ngoctb13/forya-be/internal/domains/supply_batch/repos"
+	supplyUsageRp "github.com/ngoctb13/forya-be/internal/domains/supply_usage/repos"
 	userRp "github.com/ngoctb13/forya-be/internal/domains/user/repos"
 )
 
@@ -70,4 +71,8 @@ func (r *Repo) Supply() supplyRp.ISupply {
 
 func (r *Repo) SupplyBatch() supplyBatchRp.ISupplyBatch {
 	return NewSupplyBatchSQLRepo(r.db)
+}
+
+func (r *Repo) SupplyUsage() supplyUsageRp.ISupplyUsage {
+	return NewSupplyUsageSQLRepo(r.db)
 }

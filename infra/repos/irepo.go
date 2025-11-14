@@ -10,6 +10,7 @@ import (
 	studentRp "github.com/ngoctb13/forya-be/internal/domains/student/repos"
 	supplyRp "github.com/ngoctb13/forya-be/internal/domains/supply/repos"
 	supplyBatchRp "github.com/ngoctb13/forya-be/internal/domains/supply_batch/repos"
+	supplyUsageRp "github.com/ngoctb13/forya-be/internal/domains/supply_usage/repos"
 	userRp "github.com/ngoctb13/forya-be/internal/domains/user/repos"
 )
 
@@ -25,4 +26,5 @@ type IRepo interface {
 	ClassSessionAttendance() classSessionRp.IClassSessionAttendance
 	Supply() supplyRp.ISupply
 	SupplyBatch() supplyBatchRp.ISupplyBatch
+	SupplyUsage() supplyUsageRp.ISupplyUsage
 }

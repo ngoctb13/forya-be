@@ -9,4 +9,5 @@ import (
 type ICourseStudentRepo interface {
 	Create(ctx context.Context, cs *models.CourseStudent) error
 	BatchCreate(ctx context.Context, cs []*models.CourseStudent) error
+	GetByIDs(ctx context.Context, ids []string) (map[string]*models.CourseStudent, error)
 }

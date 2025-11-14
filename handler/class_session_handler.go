@@ -111,12 +111,26 @@ func (h *Handler) BatchMarkClassSessionAttendance() gin.HandlerFunc {
 			return
 		}
 
-		// Convert request to input
 		attendanceItems := make([]inputs.AttendanceItem, 0, len(req.Attendances))
 		for _, att := range req.Attendances {
+			supplies := make([]inputs.SupplyUsageItem, 0, len(att.Supplies))
+			for _, sup := range att.Supplies {
+				var unitPrice *float64
+				if sup.UnitPrice != nil {
+					value := *sup.UnitPrice
+					unitPrice = &value
+				}
+				supplies = append(supplies, inputs.SupplyUsageItem{
+					SupplyID:  sup.SupplyID,
+					Quantity:  sup.Quantity,
+					UnitPrice: unitPrice,
+				})
+			}
+
 			attendanceItems = append(attendanceItems, inputs.AttendanceItem{
 				CourseStudentID: att.CourseStudentID,
 				IsAttended:      att.IsAttended,
+				Supplies:        supplies,
 			})
 		}
 

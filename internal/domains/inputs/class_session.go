@@ -19,6 +19,13 @@ type ListClassSessionsInput struct {
 type AttendanceItem struct {
 	CourseStudentID string
 	IsAttended      bool
+	Supplies        []SupplyUsageItem
+}
+
+type SupplyUsageItem struct {
+	SupplyID  string
+	Quantity  int
+	UnitPrice *float64
 }
 
 type BatchMarkClassSessionAttendanceInput struct {

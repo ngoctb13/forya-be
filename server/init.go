@@ -54,7 +54,14 @@ func (s *Server) InitDomains(repos repos.IRepo, t txn.ITxn) *Domains {
 	course := courseUC.NewCourse(repos.Courses())
 	courseStudent := courseStudentUC.NewCourseStudent(repos.CourseStudent(), repos.Courses())
 	auth := authUC.NewAuth(repos.RefreshToken())
-	classSession := classSessionUC.NewClassSession(repos.ClassSession(), repos.Classes(), repos.ClassSessionAttendance())
+	classSession := classSessionUC.NewClassSession(
+		repos.ClassSession(),
+		repos.Classes(),
+		repos.ClassSessionAttendance(),
+		repos.CourseStudent(),
+		repos.SupplyBatch(),
+		repos.SupplyUsage(),
+	)
 	supply := supplyUC.NewSupply(repos.Supply())
 	supplyBatch := supplyBatchUC.NewSupply(repos.SupplyBatch(), repos.Supply())
 	return &Domains{

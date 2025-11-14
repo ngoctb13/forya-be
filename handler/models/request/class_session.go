@@ -19,9 +19,16 @@ type ListClassSessionsRequest struct {
 	Limit     int     `form:"limit"`
 }
 
+type SupplyPurchaseRequest struct {
+	SupplyID  string   `json:"supply_id"`
+	Quantity  int      `json:"quantity"`
+	UnitPrice *float64 `json:"unit_price"`
+}
+
 type AttendanceItemRequest struct {
-	CourseStudentID string `json:"course_student_id"`
-	IsAttended      bool   `json:"is_attended"`
+	CourseStudentID string                  `json:"course_student_id"`
+	IsAttended      bool                    `json:"is_attended"`
+	Supplies        []SupplyPurchaseRequest `json:"supplies"`
 }
 
 type BatchMarkClassSessionAttendanceRequest struct {
@@ -36,6 +43,18 @@ func (r *BatchMarkClassSessionAttendanceRequest) Validate() error {
 		if att.CourseStudentID == "" {
 			return fmt.Errorf("course_student_id is required for attendance item at index %d", i)
 		}
+		for j, sup := range att.Supplies {
+			if sup.SupplyID == "" {
+				return fmt.Errorf("supply_id is required for attendance[%d] supply[%d]", i, j)
+			}
+			if sup.Quantity <= 0 {
+				return fmt.Errorf("quantity must be > 0 for attendance[%d] supply[%d]", i, j)
+			}
+			if sup.UnitPrice != nil && *sup.UnitPrice < 0 {
+				return fmt.Errorf("unit_price must be >= 0 for attendance[%d] supply[%d]", i, j)
+			}
+		}
 	}
+
 	return nil
 }

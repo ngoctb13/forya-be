@@ -3,6 +3,7 @@ package models
 import "time"
 
 type CourseStudent struct {
+	ID            string    `json:"id" gorm:"default:uuid_generate_v4()"`
 	StudentID     string    `json:"student_id"`
 	CourseID      string    `json:"course_id"`
 	RemainSession int       `json:"remain_session"`
