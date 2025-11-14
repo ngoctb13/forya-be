@@ -90,43 +90,6 @@ func (h *Handler) ListClassSessions() gin.HandlerFunc {
 	}
 }
 
-func (h *Handler) MarkClassSessionAttendance() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		sessionID := c.Param("sessionId")
-		if sessionID == "" {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid sessionId"})
-			return
-		}
-
-		req := &request.MarkClassSessionAttendanceRequest{}
-		if err := c.ShouldBindJSON(req); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-
-		if err := req.Validate(); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-
-		attendance, err := h.classSession.MarkAttendance(c, &inputs.MarkClassSessionAttendanceInput{
-			ClassSessionID:  sessionID,
-			CourseStudentID: req.CourseStudentID,
-			IsAttended:      req.IsAttended,
-		})
-		if err != nil {
-			log.Printf("MarkClassSessionAttendance fail with error: %v", err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-
-		c.JSON(http.StatusOK, gin.H{
-			"message":    "mark attendance successfully",
-			"attendance": response.ToClassSessionAttendance(attendance),
-		})
-	}
-}
-
 func (h *Handler) BatchMarkClassSessionAttendance() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		sessionID := c.Param("sessionId")

@@ -7,6 +7,5 @@ import (
 )
 
 type IClassSessionAttendance interface {
-	MarkAttendance(ctx context.Context, sessionID, courseStudentID string, isAttended bool) (*models.ClassSessionAttendance, error)
 	BatchMarkAttendance(ctx context.Context, sessionID string, attendances []*models.ClassSessionAttendance) error
 }

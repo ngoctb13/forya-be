@@ -19,18 +19,6 @@ type ListClassSessionsRequest struct {
 	Limit     int     `form:"limit"`
 }
 
-type MarkClassSessionAttendanceRequest struct {
-	CourseStudentID string `json:"course_student_id"`
-	IsAttended      bool   `json:"is_attended"`
-}
-
-func (r *MarkClassSessionAttendanceRequest) Validate() error {
-	if r.CourseStudentID == "" {
-		return errors.New("course_student_id is required")
-	}
-	return nil
-}
-
 type AttendanceItemRequest struct {
 	CourseStudentID string `json:"course_student_id"`
 	IsAttended      bool   `json:"is_attended"`

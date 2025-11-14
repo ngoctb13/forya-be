@@ -16,12 +16,6 @@ type ListClassSessionsInput struct {
 	Limit     int
 }
 
-type MarkClassSessionAttendanceInput struct {
-	ClassSessionID  string
-	CourseStudentID string
-	IsAttended      bool
-}
-
 type AttendanceItem struct {
 	CourseStudentID string
 	IsAttended      bool

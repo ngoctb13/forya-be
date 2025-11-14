@@ -81,33 +81,6 @@ func (cl *ClassSession) ListClassSessions(ctx context.Context, input *inputs.Lis
 	return csArr, p, nil
 }
 
-func (cl *ClassSession) MarkAttendance(ctx context.Context, input *inputs.MarkClassSessionAttendanceInput) (*models.ClassSessionAttendance, error) {
-	if input == nil {
-		return nil, errors.New("input is required")
-	}
-	if input.ClassSessionID == "" {
-		return nil, errors.New("class session id is required")
-	}
-	if input.CourseStudentID == "" {
-		return nil, errors.New("course student id is required")
-	}
-
-	session, err := cl.classSessionRepo.GetByID(ctx, input.ClassSessionID)
-	if err != nil {
-		return nil, err
-	}
-	if session == nil {
-		return nil, errors.New("class session not found")
-	}
-
-	attendance, err := cl.classSessionAttendances.MarkAttendance(ctx, input.ClassSessionID, input.CourseStudentID, input.IsAttended)
-	if err != nil {
-		return nil, err
-	}
-
-	return attendance, nil
-}
-
 func (cl *ClassSession) BatchMarkAttendance(ctx context.Context, input *inputs.BatchMarkClassSessionAttendanceInput) error {
 	if input == nil {
 		return errors.New("input is required")
