@@ -107,3 +107,37 @@ func (cl *ClassSession) MarkAttendance(ctx context.Context, input *inputs.MarkCl
 
 	return attendance, nil
 }
+
+func (cl *ClassSession) BatchMarkAttendance(ctx context.Context, input *inputs.BatchMarkClassSessionAttendanceInput) error {
+	if input == nil {
+		return errors.New("input is required")
+	}
+	if input.ClassSessionID == "" {
+		return errors.New("class session id is required")
+	}
+	if len(input.Attendances) == 0 {
+		return errors.New("attendances list cannot be empty")
+	}
+
+	session, err := cl.classSessionRepo.GetByID(ctx, input.ClassSessionID)
+	if err != nil {
+		return err
+	}
+	if session == nil {
+		return errors.New("class session not found")
+	}
+
+	attendances := make([]*models.ClassSessionAttendance, 0, len(input.Attendances))
+	for _, att := range input.Attendances {
+		if att.CourseStudentID == "" {
+			return errors.New("course_student_id is required for all attendance items")
+		}
+		attendances = append(attendances, &models.ClassSessionAttendance{
+			ClassSessionID:  input.ClassSessionID,
+			CourseStudentID: att.CourseStudentID,
+			IsAttended:      att.IsAttended,
+		})
+	}
+
+	return cl.classSessionAttendances.BatchMarkAttendance(ctx, input.ClassSessionID, attendances)
+}

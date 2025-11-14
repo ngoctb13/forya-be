@@ -126,3 +126,51 @@ func (h *Handler) MarkClassSessionAttendance() gin.HandlerFunc {
 		})
 	}
 }
+
+func (h *Handler) BatchMarkClassSessionAttendance() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		sessionID := c.Param("sessionId")
+		if sessionID == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid sessionId"})
+			return
+		}
+
+		req := &request.BatchMarkClassSessionAttendanceRequest{}
+		if err := c.ShouldBindJSON(req); err != nil {
+			log.Printf("parse request error: %v", err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		if err := req.Validate(); err != nil {
+			log.Printf("validate request error: %v", err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		// Convert request to input
+		attendanceItems := make([]inputs.AttendanceItem, 0, len(req.Attendances))
+		for _, att := range req.Attendances {
+			attendanceItems = append(attendanceItems, inputs.AttendanceItem{
+				CourseStudentID: att.CourseStudentID,
+				IsAttended:      att.IsAttended,
+			})
+		}
+
+		err := h.classSession.BatchMarkAttendance(c, &inputs.BatchMarkClassSessionAttendanceInput{
+			ClassSessionID: sessionID,
+			Attendances:    attendanceItems,
+		})
+
+		if err != nil {
+			log.Printf("BatchMarkClassSessionAttendance fail with error: %v", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"message": "batch mark attendance successfully",
+			"count":   len(attendanceItems),
+		})
+	}
+}

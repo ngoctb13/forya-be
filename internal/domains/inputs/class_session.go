@@ -21,3 +21,13 @@ type MarkClassSessionAttendanceInput struct {
 	CourseStudentID string
 	IsAttended      bool
 }
+
+type AttendanceItem struct {
+	CourseStudentID string
+	IsAttended      bool
+}
+
+type BatchMarkClassSessionAttendanceInput struct {
+	ClassSessionID string
+	Attendances    []AttendanceItem
+}
