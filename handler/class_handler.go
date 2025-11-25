@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"log"
 	"net/http"
 
@@ -8,6 +9,7 @@ import (
 	"github.com/ngoctb13/forya-be/handler/models/request"
 	"github.com/ngoctb13/forya-be/handler/models/response"
 	"github.com/ngoctb13/forya-be/internal/domains/inputs"
+	"gorm.io/gorm"
 )
 
 func (h *Handler) CreateClass() gin.HandlerFunc {
@@ -62,6 +64,36 @@ func (h *Handler) ListClassByName() gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK, response.ToSearchClassResponse(classes, pagination))
+	}
+}
+
+func (h *Handler) GetClass() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		classID := c.Param("classId")
+		if classID == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "classId is required"})
+			return
+		}
+
+		classData, err := h.class.GetClass(c, classID)
+		if err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				c.JSON(http.StatusNotFound, gin.H{"error": "class not found"})
+				return
+			}
+
+			log.Printf("GetClassUsecase fail with error: %v", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, response.Class{
+			ID:          classData.ID,
+			Name:        classData.Name,
+			Description: classData.Description,
+			Schedule:    classData.Schedule,
+			IsActive:    classData.IsActive,
+		})
 	}
 }
 

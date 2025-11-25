@@ -35,3 +35,7 @@ func (c *Class) ListClassByName(ctx context.Context, input *inputs.SearchClassBy
 	pagination := models.NewPagination(input.Page, input.Limit)
 	return c.classRepo.GetClassContainName(ctx, input.Name, pagination)
 }
+
+func (c *Class) GetClass(ctx context.Context, classID string) (*models.Class, error) {
+	return c.classRepo.GetClassByID(ctx, classID)
+}

@@ -58,6 +58,7 @@ func (h *Handler) ConfigRouteAPI(router *gin.RouterGroup) {
 
 	// class
 	router.POST("/class/create", middlewares.AdminOnly(), h.CreateClass())
+	router.GET("/class/:classId", middlewares.AdminOnly(), h.GetClass())
 	router.GET("/class/list", middlewares.AdminOnly(), h.ListClassByName())
 	router.POST("/class/:classId/students", middlewares.AdminOnly(), h.EnrollClass())
 	router.DELETE("/class/:classId/student/:studentId", middlewares.AdminOnly(), h.DeleteStudentFromClass())
