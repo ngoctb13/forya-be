@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/ngoctb13/forya-be/handler/models/request"
+	"github.com/ngoctb13/forya-be/handler/models/response"
 	"github.com/ngoctb13/forya-be/internal/domains/inputs"
 	"github.com/ngoctb13/forya-be/utils"
 )
@@ -52,6 +53,7 @@ func (h *Handler) Login() gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK, gin.H{
+			"user":          response.ToUserResponse(user),
 			"token":         at,
 			"refresh_token": rt,
 		})
