@@ -80,7 +80,7 @@ func (s *Student) UpdateStudent(ctx context.Context, input *inputs.UpdateStudent
 func (s *Student) ListStudents(ctx context.Context, input *inputs.ListStudentsInput) ([]*models.Student, *models.Pagination, error) {
 	queries := make(map[string]interface{})
 	if input.FullName != nil {
-		queries["name"] = *input.FullName
+		queries["full_name"] = *input.FullName
 	}
 	if input.AgeMin != nil {
 		queries["age_min"] = *input.AgeMin

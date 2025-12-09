@@ -121,9 +121,9 @@ func (s *studentSQLRepo) List(ctx context.Context, queries map[string]interface{
 
 	for k, v := range queries {
 		switch k {
-		case "name":
+		case "full_name":
 			if name, ok := v.(string); ok {
-				query = query.Where("unaccent(lower(name)) ILIKE unaccent(lower(?))", "%"+name+"%")
+				query = query.Where("unaccent(lower(full_name)) ILIKE unaccent(lower(?))", "%"+name+"%")
 			}
 		case "age_min":
 			query = query.Where("age >= ?", v)
