@@ -69,8 +69,8 @@ func (r *UpdateStudentRequest) Validate() error {
 				return errors.New("invalid name: must be a string with length >= 2")
 			}
 		case "age":
-			age, ok := v.(int)
-			if !ok || age <= 0 {
+			age, ok := v.(float64)
+			if !ok || int(age) <= 0 {
 				return errors.New("invalid age: must be a positive number")
 			}
 		case "phone_number", "parent_phone_number":
@@ -90,8 +90,8 @@ type ListStudentsRequest struct {
 	AgeMax            *int    `form:"age_max"`
 	PhoneNumber       *string `form:"phone_number"`
 	ParentPhoneNumber *string `form:"parent_phone_number"`
-	Page              int     `json:"page"`
-	Limit             int     `json:"limit"`
+	Page              int     `form:"page"`
+	Limit             int     `form:"limit"`
 }
 
 type ListClassStudentsRequest struct {

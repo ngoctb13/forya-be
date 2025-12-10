@@ -150,6 +150,7 @@ func (s *studentSQLRepo) List(ctx context.Context, queries map[string]interface{
 	}
 	pagination.SetTotal(total)
 	query = pagination.ApplyToQuery(query)
+	query = query.Order("created_at DESC")
 
 	if err := query.Find(&students).Error; err != nil {
 		return nil, nil, err
