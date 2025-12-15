@@ -23,14 +23,42 @@ func (c *ClassStudent) EnrollClass(ctx context.Context, input *inputs.EnrollClas
 	var csArr []*models.ClassStudent
 	now := time.Now()
 
+	existingArr, err := c.classStudentRepo.ListByClassAndStudents(ctx, input.ClassID, input.StudentIDs)
+	if err != nil {
+		return err
+	}
+
+	existingMap := make(map[string]*models.ClassStudent, len(existingArr))
+	for _, cs := range existingArr {
+		existingMap[cs.StudentID] = cs
+	}
+
+	var resetIDs []string
+
 	for _, id := range input.StudentIDs {
-		cs := &models.ClassStudent{
+		if cs, ok := existingMap[id]; ok {
+			if cs.LeftAt.IsZero() {
+				continue
+			}
+			resetIDs = append(resetIDs, id)
+			continue
+		}
+
+		csArr = append(csArr, &models.ClassStudent{
 			ClassID:   input.ClassID,
 			StudentID: id,
 			JoinedAt:  now,
-		}
+		})
+	}
 
-		csArr = append(csArr, cs)
+	if len(resetIDs) > 0 {
+		if err := c.classStudentRepo.ResetLeftAtBulk(ctx, input.ClassID, resetIDs); err != nil {
+			return err
+		}
+	}
+
+	if len(csArr) == 0 {
+		return nil
 	}
 
 	return c.classStudentRepo.BatchCreate(ctx, csArr)
