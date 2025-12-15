@@ -44,6 +44,17 @@ type UpdateStudentRequest struct {
 	Fields map[string]interface{} `json:"fields" binding:"required"`
 }
 
+type SetStudentStatusRequest struct {
+	IsActive *bool `json:"is_active" binding:"required"`
+}
+
+func (r *SetStudentStatusRequest) Validate() error {
+	if r.IsActive == nil {
+		return errors.New("is_active is required")
+	}
+	return nil
+}
+
 func (r *UpdateStudentRequest) Validate() error {
 	if len(r.Fields) == 0 {
 		return errors.New("no field provided")

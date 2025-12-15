@@ -192,6 +192,37 @@ func (h *Handler) UpdateStudent() gin.HandlerFunc {
 	}
 }
 
+func (h *Handler) SetStudentStatus() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		studentId := c.Param("studentId")
+		if studentId == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid studentId"})
+			return
+		}
+
+		req := &request.SetStudentStatusRequest{}
+		if err := c.ShouldBindJSON(req); err != nil {
+			log.Printf("parse request error: %v", err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		if err := req.Validate(); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		student, err := h.student.SetStudentStatus(c, studentId, *req.IsActive)
+		if err != nil {
+			log.Printf("SetStudentStatusUsecase fail with error: %v", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, student)
+	}
+}
+
 func (h *Handler) ListStudents() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		req := &request.ListStudentsRequest{}

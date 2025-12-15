@@ -66,6 +66,7 @@ func (h *Handler) ConfigRouteAPI(router *gin.RouterGroup) {
 	// student
 	router.POST("/student/create", middlewares.AdminOnly(), h.CreateStudent())
 	router.PATCH("/student/:studentId/update", middlewares.AdminOnly(), h.UpdateStudent())
+	router.PATCH("/student/:studentId/status", middlewares.AdminOnly(), h.SetStudentStatus())
 	router.GET("/student/list", middlewares.AdminOnly(), h.ListStudents())
 	router.POST("student/import", middlewares.AdminOnly(), h.ImportStudentsCSVFile())
 	router.GET("/student/list/:classId", middlewares.AdminOnly(), h.ListClassStudents())

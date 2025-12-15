@@ -77,6 +77,18 @@ func (s *Student) UpdateStudent(ctx context.Context, input *inputs.UpdateStudent
 	return s.studentRepo.UpdateWithMap(ctx, input.StudentID, input.Fields)
 }
 
+func (s *Student) SetStudentStatus(ctx context.Context, studentID string, isActive bool) (*models.Student, error) {
+	student, err := s.studentRepo.GetStudentByID(ctx, studentID)
+	if err != nil {
+		return nil, err
+	}
+	if student == nil {
+		return nil, errors.New("student not found")
+	}
+
+	return s.studentRepo.UpdateWithMap(ctx, studentID, map[string]interface{}{"is_active": isActive})
+}
+
 func (s *Student) ListStudents(ctx context.Context, input *inputs.ListStudentsInput) ([]*models.Student, *models.Pagination, error) {
 	queries := make(map[string]interface{})
 	if input.FullName != nil {
