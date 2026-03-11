@@ -20,8 +20,6 @@ func main() {
 	flag.StringVar(&port, "port", "", "Specify port")
 	flag.Parse()
 
-	defer setting.WaitOSSignal()
-
 	cfg, err := config.Load(configFile)
 	if err != nil {
 		zap.S().Errorf("Error loading config: %v", err)
@@ -50,13 +48,24 @@ func main() {
 		zap.S().Errorf("Server error: %v", err)
 	}
 
-	// Graceful shutdown
+	// Graceful shutdown with timeout
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
 
-	if err := s.Shutdown(ctx); err != nil {
-		zap.S().Errorf("Failed to shutdown server: %v", err)
-	} else {
-		zap.S().Info("Server shutdown completed")
+	done := make(chan struct{})
+	go func() {
+		defer close(done)
+		if err := s.Shutdown(ctx); err != nil {
+			zap.S().Errorf("Failed to shutdown server: %v", err)
+		} else {
+			zap.S().Info("Server shutdown completed")
+		}
+	}()
+
+	select {
+	case <-done:
+	case <-ctx.Done():
+		zap.S().Warn("Shutdown timed out, forcing exit")
 	}
+
+	cancel()
 }

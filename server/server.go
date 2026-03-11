@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"log"
 	"net"
@@ -19,6 +20,7 @@ type Server struct {
 	httpServer *http.Server
 	router     *gin.Engine
 	cfg        *config.AppConfig
+	db         *sql.DB
 }
 
 func NewServer(cfg *config.AppConfig) *Server {
@@ -34,6 +36,12 @@ func (s *Server) Init() {
 	if err != nil {
 		panic(err)
 	}
+
+	sqlDB, err := db.DB()
+	if err != nil {
+		panic(err)
+	}
+	s.db = sqlDB
 
 	t := txn.NewTxn(db)
 	repo := repos.NewSQLRepo(db, s.cfg.DB)
@@ -63,5 +71,20 @@ func (s *Server) ListenHTTP() error {
 
 func (s *Server) Shutdown(ctx context.Context) error {
 	log.Printf("Shutting down server gracefully...")
-	return s.httpServer.Shutdown(ctx)
+
+	if err := s.httpServer.Shutdown(ctx); err != nil {
+		return err
+	}
+
+	// Close database connection
+	if s.db != nil {
+		log.Printf("Closing database connection...")
+		if err := s.db.Close(); err != nil {
+			log.Printf("Error closing database: %v", err)
+			return err
+		}
+		log.Printf("Database connection closed")
+	}
+
+	return nil
 }
